@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../errors/exceptions.dart';
 import '../response_model.dart';
 
 class ResponseModelInterceptor extends Interceptor {
@@ -9,14 +10,23 @@ class ResponseModelInterceptor extends Interceptor {
     ResponseInterceptorHandler handler,
   ) {
     try {
-      final responseModel = ResponseModel.fromJson(response.data);
+      final responseModel = ResponseModel.fromJson(
+        response.data,
+        (json) => json,
+      );
 
+      // statusCode is 200 but the response is not successful
       if (!responseModel.isSuccess) {
+        final exception = BusinessException(
+          message: responseModel.msg,
+          code: responseModel.code,
+        );
+
         handler.reject(
           DioException(
             requestOptions: response.requestOptions,
-            response: response,
-            error: responseModel.msg,
+            error: exception,
+            type: DioExceptionType.unknown,
           ),
         );
         return;
@@ -26,11 +36,19 @@ class ResponseModelInterceptor extends Interceptor {
 
       handler.next(response);
     } on Exception catch (e, s) {
+      // statusCode is 200 but the response is not successful
+      final exception = AppException(
+        message: e.toString(),
+        code: -1,
+        error: e,
+        stackTrace: s,
+      );
+
       handler.reject(
         DioException(
           requestOptions: response.requestOptions,
-          error: e,
-          stackTrace: s,
+          error: exception,
+          type: DioExceptionType.unknown,
         ),
       );
     }
