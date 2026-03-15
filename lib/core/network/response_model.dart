@@ -2,8 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'response_model.g.dart';
 
-@JsonSerializable(genericArgumentFactories: true)
-class ResponseModel<T> {
+@JsonSerializable()
+class ResponseModel {
   const ResponseModel({
     required this.code,
     required this.msg,
@@ -11,21 +11,19 @@ class ResponseModel<T> {
     this.pagination,
   });
 
-  factory ResponseModel.fromJson(
-    Map<String, dynamic> json,
-    T Function(Object? json) fromJsonT,
-  ) => _$ResponseModelFromJson(json, fromJsonT);
+  factory ResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$ResponseModelFromJson(json);
   @JsonKey(defaultValue: 0)
   final int code;
   @JsonKey(defaultValue: '')
   final String msg;
-  final T? data;
+  final dynamic data;
   final PaginationModel? pagination;
 
   /// Check if the business logic is correct
   bool get isSuccess => code == 0 || code == 200;
-  Map<String, dynamic> toJson(T Function(T value) toJsonT) =>
-      _$ResponseModelToJson(this, toJsonT);
+
+  Map<String, dynamic> toJson() => _$ResponseModelToJson(this);
 }
 
 /// Pagination data model
