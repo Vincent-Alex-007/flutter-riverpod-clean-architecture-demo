@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 import 'exceptions.dart';
 
@@ -18,9 +17,6 @@ enum NetworkExceptionMessageEnum {
 /// error handler
 @lazySingleton
 final class ErrorHandler {
-  ErrorHandler(this._talker);
-  final Talker _talker;
-
   AppException handle(Object error, {StackTrace? stackTrace}) {
     String errorMessage = 'Unknown error: $error';
     StackTrace? stackTrace0 = stackTrace;
@@ -69,9 +65,6 @@ final class ErrorHandler {
       errorMessage = 'JsonException: $error';
       appException = ex;
     }
-
-    //log the error
-    _talker.error(errorMessage, [appException, stackTrace0]);
 
     return appException;
   }

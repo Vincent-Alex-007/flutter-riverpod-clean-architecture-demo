@@ -1,9 +1,13 @@
 import 'package:dio/dio.dart';
 
+import '../../errors/error_handler.dart';
 import '../../errors/exceptions.dart';
 import '../response_model.dart';
 
-class ResponseModelInterceptor extends Interceptor {
+final class ResponseModelInterceptor extends Interceptor {
+  ResponseModelInterceptor({required this.errorHandler});
+  final ErrorHandler errorHandler;
+
   @override
   void onResponse(
     Response<dynamic> response,
@@ -17,15 +21,13 @@ class ResponseModelInterceptor extends Interceptor {
 
       // statusCode is 200 but the response is not successful
       if (!responseModel.isSuccess) {
-        final exception = BusinessException(
-          message: responseModel.msg,
-          code: responseModel.code,
-        );
-
         handler.reject(
           DioException(
             requestOptions: response.requestOptions,
-            error: exception,
+            error: BusinessException(
+              message: responseModel.msg,
+              code: responseModel.code,
+            ),
             type: DioExceptionType.unknown,
           ),
         );
@@ -35,22 +37,36 @@ class ResponseModelInterceptor extends Interceptor {
       response.data = responseModel;
 
       handler.next(response);
-    } on Exception catch (e, s) {
+    } catch (e, s) {
       // statusCode is 200 but the response is not successful
-      final exception = AppException(
-        message: e.toString(),
-        code: -1,
-        error: e,
-        stackTrace: s,
-      );
-
       handler.reject(
         DioException(
           requestOptions: response.requestOptions,
-          error: exception,
+          error: AppException(
+            message: e.toString(),
+            code: -1,
+            error: e,
+            stackTrace: s,
+          ),
           type: DioExceptionType.unknown,
         ),
       );
     }
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    // 统一映射：把 DioException 中的 error => BusinessException / JsonException / NetworkException 其他异常都落成 AppException
+    final mapped = errorHandler.handle(
+      err.error ?? err,
+      stackTrace: err.stackTrace,
+    );
+    handler.reject(
+      err.copyWith(
+        error: mapped,
+        // 如果你希望 response 也带着（例如 4xx/5xx 的 body），保留 err.response
+        // response: err.response,
+      ),
+    );
   }
 }

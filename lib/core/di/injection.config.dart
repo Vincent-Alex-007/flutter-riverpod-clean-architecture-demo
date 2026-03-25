@@ -38,11 +38,9 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i558.FlutterSecureStorage>(() => storageModule.secureStorage);
-    gh.lazySingleton<_i404.ErrorHandler>(
-      () => _i404.ErrorHandler(gh<_i207.Talker>()),
-    );
+    gh.lazySingleton<_i404.ErrorHandler>(() => _i404.ErrorHandler());
     gh.lazySingleton<_i289.DioClient>(
-      () => _i289.DioClient(gh<_i207.Talker>()),
+      () => _i289.DioClient(gh<_i207.Talker>(), gh<_i404.ErrorHandler>()),
     );
     return this;
   }
