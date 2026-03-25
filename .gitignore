@@ -48,3 +48,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Code generation outputs (NOT recommended to ignore)
+**/*.g.dart
+**/*.freezed.dart

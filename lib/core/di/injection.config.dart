@@ -17,6 +17,7 @@ import 'package:riverpod_template/core/di/modules/log_module.dart' as _i353;
 import 'package:riverpod_template/core/di/modules/router_module.dart' as _i244;
 import 'package:riverpod_template/core/di/modules/storage_module.dart' as _i61;
 import 'package:riverpod_template/core/errors/error_handler.dart' as _i404;
+import 'package:riverpod_template/core/network/dio_client.dart' as _i289;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:talker_flutter/talker_flutter.dart' as _i207;
 
@@ -39,6 +40,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i558.FlutterSecureStorage>(() => storageModule.secureStorage);
     gh.lazySingleton<_i404.ErrorHandler>(
       () => _i404.ErrorHandler(gh<_i207.Talker>()),
+    );
+    gh.lazySingleton<_i289.DioClient>(
+      () => _i289.DioClient(gh<_i207.Talker>()),
     );
     return this;
   }

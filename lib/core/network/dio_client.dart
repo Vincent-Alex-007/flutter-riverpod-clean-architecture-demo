@@ -4,17 +4,17 @@ import 'package:injectable/injectable.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-import '../di/injection.dart';
+import '../config/env/app_env.dart';
 import 'interceptors/response_model_interceptor.dart';
 
 const String kContentTypeJson = 'application/json';
 
 @lazySingleton
 final class DioClient {
-  DioClient._() {
+  DioClient(Talker talker) {
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.example.com',
+        baseUrl: appEnv.baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         sendTimeout: const Duration(seconds: 10),
@@ -24,7 +24,7 @@ final class DioClient {
     );
 
     _dio.interceptors
-      ..add(TalkerDioLogger(talker: getIt<Talker>()))
+      ..add(TalkerDioLogger(talker: talker))
       ..add(RetryInterceptor(dio: _dio))
       ..add(ResponseModelInterceptor());
   }
