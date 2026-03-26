@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-import '../config/env/app_env.dart';
+import '../config/app_env.dart';
 import '../errors/error_handler.dart';
 import '../errors/exceptions.dart';
 import 'interceptors/response_model_interceptor.dart';
