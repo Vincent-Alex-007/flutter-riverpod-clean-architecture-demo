@@ -1,9 +1,8 @@
 {
-  // 保存时自动格式化
   "editor.formatOnSave": true,
-  // Dart 文件使用 Dart 官方格式化
   "[dart]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "Dart-Code.dart-code"
-  }
+  },
+  "dart.flutterSdkPath": ".fvm/versions/3.41.5"
 }
