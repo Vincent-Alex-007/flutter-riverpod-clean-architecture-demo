@@ -65,7 +65,6 @@ final class DioClient {
       )
       ..add(TalkerDioLogger(talker: talker));
   }
-
   late final Dio _dio;
 
   Dio get instance => _dio;
