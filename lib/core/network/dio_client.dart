@@ -5,6 +5,7 @@ import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../config/env/app_env.dart';
+import '../di/injection.dart';
 import '../errors/error_handler.dart';
 import '../errors/exceptions.dart';
 import 'interceptors/response_model_interceptor.dart';
@@ -16,7 +17,7 @@ final class DioClient {
   DioClient(Talker talker, ErrorHandler errorHandler) {
     _dio = Dio(
       BaseOptions(
-        baseUrl: appEnv.baseUrl,
+        baseUrl: getIt<AppEnv>().baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         sendTimeout: const Duration(seconds: 10),
