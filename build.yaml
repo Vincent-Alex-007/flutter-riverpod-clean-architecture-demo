@@ -1,0 +1,37 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+
+          # 生成 toJson 时，对嵌套对象调用它们自己的 toJson
+          explicit_to_json: true
+
+          # null 字段不写进 JSON，一般更符合后端接口习惯
+          include_if_null: false
+
+          # 是否做运行时类型检查（true 更安全，false 更快）
+          # 你的配置模型多为内部使用，建议 false
+          checked: false
+
+          # 全局字段命名策略（默认 none）
+          # 你已经在个别字段上用 @JsonKey(name: ...) 指定了名字，
+          # 这里保持 none 避免全局改名影响其它模型
+          field_rename: none
+
+      flutter_gen_runner:
+        options:
+          output: lib/assets/gen
+          line_length: 120
+          parse_metadata: true
+          integrations:
+            image: true
+            flutter_svg: true
+            rive: true
+            lottie: true
+          assets:
+            enabled: true
+            outputs:
+              package_parameter_enabled: true
+              directory_path_enabled: true
+              class_name: Assets

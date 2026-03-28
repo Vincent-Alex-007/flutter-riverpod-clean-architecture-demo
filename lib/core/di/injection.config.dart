@@ -34,15 +34,15 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final logModule = _$LogModule();
-    final routerModule = _$RouterModule();
     final storageModule = _$StorageModule();
+    final routerModule = _$RouterModule();
     gh.singleton<_i207.Talker>(() => logModule.talker);
-    gh.singleton<_i583.GoRouter>(() => routerModule.appRouter);
     await gh.singletonAsync<_i460.SharedPreferences>(
       () => storageModule.sharedPreference,
       preResolve: true,
     );
     gh.singleton<_i558.FlutterSecureStorage>(() => storageModule.secureStorage);
+    gh.lazySingleton<_i583.GoRouter>(() => routerModule.appRouter);
     gh.lazySingleton<_i404.ErrorHandler>(() => _i404.ErrorHandler());
     gh.lazySingleton<_i754.AppEnvDev>(
       () => _i754.AppEnvDev(),
@@ -65,6 +65,6 @@ extension GetItInjectableX on _i174.GetIt {
 
 class _$LogModule extends _i353.LogModule {}
 
-class _$RouterModule extends _i244.RouterModule {}
-
 class _$StorageModule extends _i61.StorageModule {}
+
+class _$RouterModule extends _i244.RouterModule {}

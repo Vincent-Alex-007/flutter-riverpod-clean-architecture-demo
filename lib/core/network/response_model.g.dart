@@ -24,8 +24,8 @@ Map<String, dynamic> _$ResponseModelToJson<T>(
 ) => <String, dynamic>{
   'code': instance.code,
   'msg': instance.msg,
-  'data': _$nullableGenericToJson(instance.data, toJsonT),
-  'pagination': instance.pagination,
+  'data': ?_$nullableGenericToJson(instance.data, toJsonT),
+  'pagination': ?instance.pagination?.toJson(),
 };
 
 T? _$nullableGenericFromJson<T>(

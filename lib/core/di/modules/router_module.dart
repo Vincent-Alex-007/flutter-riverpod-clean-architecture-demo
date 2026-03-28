@@ -5,6 +5,6 @@ import '../../router/app_router.dart';
 
 @module
 abstract class RouterModule {
-  @singleton
+  @lazySingleton
   GoRouter get appRouter => createAppRouter();
 }
