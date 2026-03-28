@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:talker_riverpod_logger/talker_riverpod_logger.dart';
 
-import 'core/config/env/app_env.dart';
+import 'core/config/app_env.dart';
 import 'core/di/injection.dart';
 
 Future<void> bootstrap(

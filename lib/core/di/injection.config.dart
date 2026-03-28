@@ -13,7 +13,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:go_router/go_router.dart' as _i583;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:riverpod_template/core/config/env/app_env.dart' as _i187;
+import 'package:riverpod_template/core/config/app_env.dart' as _i754;
 import 'package:riverpod_template/core/di/modules/log_module.dart' as _i353;
 import 'package:riverpod_template/core/di/modules/router_module.dart' as _i244;
 import 'package:riverpod_template/core/di/modules/storage_module.dart' as _i61;
@@ -44,16 +44,16 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i558.FlutterSecureStorage>(() => storageModule.secureStorage);
     gh.lazySingleton<_i404.ErrorHandler>(() => _i404.ErrorHandler());
-    gh.lazySingleton<_i187.AppEnvDev>(
-      () => _i187.AppEnvDev(),
+    gh.lazySingleton<_i754.AppEnvDev>(
+      () => _i754.AppEnvDev(),
       registerFor: {_dev},
     );
-    gh.lazySingleton<_i187.AppEnvUat>(
-      () => _i187.AppEnvUat(),
+    gh.lazySingleton<_i754.AppEnvUat>(
+      () => _i754.AppEnvUat(),
       registerFor: {_uat},
     );
-    gh.lazySingleton<_i187.AppEnvProd>(
-      () => _i187.AppEnvProd(),
+    gh.lazySingleton<_i754.AppEnvProd>(
+      () => _i754.AppEnvProd(),
       registerFor: {_prod},
     );
     gh.lazySingleton<_i289.DioClient>(

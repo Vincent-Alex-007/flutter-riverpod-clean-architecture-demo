@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-import '../config/env/app_env.dart';
+import '../config/app_env.dart';
 import '../di/injection.dart';
 import '../errors/error_handler.dart';
 import '../errors/exceptions.dart';
@@ -66,7 +66,6 @@ final class DioClient {
       )
       ..add(TalkerDioLogger(talker: talker));
   }
-
   late final Dio _dio;
 
   Dio get instance => _dio;

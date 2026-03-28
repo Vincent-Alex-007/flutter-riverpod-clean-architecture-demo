@@ -52,3 +52,6 @@ app.*.map.json
 # Code generation outputs (NOT recommended to ignore)
 **/*.g.dart
 **/*.freezed.dart
+
+# FVM Version Cache
+.fvm/
