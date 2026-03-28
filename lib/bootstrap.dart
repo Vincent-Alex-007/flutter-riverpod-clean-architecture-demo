@@ -6,8 +6,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:talker_riverpod_logger/talker_riverpod_logger.dart';
 
-import 'core/config/app_env.dart';
-import 'core/di/injection.dart';
+import 'core/enums/app_env_enum.dart';
+import 'infrastructure/config/time_zone_config.dart';
+import 'infrastructure/di/injection.dart';
 
 Future<void> bootstrap(
   FutureOr<Widget> Function() builder,
@@ -18,6 +19,11 @@ Future<void> bootstrap(
 
   // Configure dependencies
   await configureDependencies(env.value);
+
+  // Initialize time zone
+  await TimeZoneConfig.instance.init(
+    deviceTimeZoneResolver: resolveDeviceTimeZone,
+  );
 
   // Get the talker
   final talker = getIt<Talker>();
