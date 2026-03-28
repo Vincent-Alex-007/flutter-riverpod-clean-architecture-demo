@@ -21,17 +21,29 @@ targets:
 
       flutter_gen_runner:
         options:
+          # 输出路径
           output: lib/assets/gen
+          # 行长度
           line_length: 120
+          # 解析元数据
           parse_metadata: true
+          # 集成
           integrations:
+            # 图片
             image: true
+            # SVG
             flutter_svg: true
+            # Rive
             rive: true
+            # Lottie
             lottie: true
+          # 资产
           assets:
             enabled: true
             outputs:
+              # 包参数启用
               package_parameter_enabled: true
+              # 目录路径启用
               directory_path_enabled: true
+              # 类名
               class_name: Assets

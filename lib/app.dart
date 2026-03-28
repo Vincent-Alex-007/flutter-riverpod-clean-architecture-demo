@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/di/injection.dart';
+import 'l10n/l10n.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -12,6 +13,7 @@ class App extends StatelessWidget {
       routerConfig: getIt<GoRouter>(),
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
+      supportedLocales: L10n.supportedLocales,
     );
   }
 }
