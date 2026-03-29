@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../config/app_env.dart';
 import '../../di/injection.dart';
+import '../dio_client.dart';
 
 class _PendingRequest {
   _PendingRequest(this.options, this.handler);
@@ -15,8 +17,10 @@ const String kRefreshUrl = '/api/v1/intel-user/refresh';
 
 const String kAuthorizationHeader = 'Authorization';
 
-class AuthInterceptor extends Interceptor {
-  AuthInterceptor(this._dio) {
+@lazySingleton
+final class AuthInterceptor extends Interceptor {
+  AuthInterceptor(DioClient dioClient) {
+    _dio = dioClient.dio;
     // Create a new Dio instance for refreshing tokens
     _tokenRefreshDio = Dio(
       BaseOptions(
@@ -31,7 +35,8 @@ class AuthInterceptor extends Interceptor {
       ),
     );
   }
-  final Dio _dio; // Main Dio instance, for retrying the original request
+
+  late final Dio _dio; // Main Dio instance, for retrying the original request
 
   // Mutex: Whether a refresh is in progress
   bool _isRefreshing = false;
@@ -48,7 +53,7 @@ class AuthInterceptor extends Interceptor {
     final token = '1234567890';
 
     // 2. If the token exists and the Authorization header is not included, inject it
-    if (token != null && token.isNotEmpty) {
+    if (token.isNotEmpty) {
       options.headers[kAuthorizationHeader] = 'Bearer $token';
     }
 
@@ -99,7 +104,7 @@ class AuthInterceptor extends Interceptor {
   Future<String> _refreshTokenWithRetry({int maxRetries = 2}) async {
     final refreshToken = '1234567890';
 
-    if (refreshToken == null || refreshToken.isEmpty) {
+    if (refreshToken.isEmpty) {
       throw DioException(
         requestOptions: RequestOptions(path: kRefreshUrl),
         type: DioExceptionType.cancel,

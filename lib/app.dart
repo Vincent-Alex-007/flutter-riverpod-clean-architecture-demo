@@ -14,6 +14,7 @@ class App extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
       supportedLocales: L10n.supportedLocales,
+      localizationsDelegates: L10n.localizationsDelegates,
     );
   }
 }
