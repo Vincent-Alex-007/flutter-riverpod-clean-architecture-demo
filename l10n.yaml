@@ -1,0 +1,25 @@
+# 国际化配置文件
+# 指定国际化文件的目录
+arb-dir: lib/assets/arbs
+
+# 模板 ARB 文件
+template-arb-file: intl_en.arb
+
+# 生成的本地化文件输出目录
+output-dir: lib/l10n
+
+# 生成的本地化类名
+output-class: L10n
+
+# 输出本地化文件
+output-localization-file: l10n.dart
+
+# 添加支持的语言列表
+preferred-supported-locales:
+  - en_US
+  - zh_CN
+  - es_ES
+  - ja_JP
+  - ko_KR
+# 将未翻译的条目输出到文件（JSON）
+untranslated-messages-file: lib/l10n/untranslated.json

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/router/router_constant.dart';
+import '../../../../infrastructure/router/router_constant.dart';
 import '../pages/home_screen.dart';
 
 part 'home_routes.g.dart';

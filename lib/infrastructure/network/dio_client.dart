@@ -5,18 +5,18 @@ import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../config/app_env.dart';
-import '../errors/error_handler.dart';
+import '../di/injection.dart';
 import '../errors/exceptions.dart';
-import 'interceptors/response_model_interceptor.dart';
+import 'interceptors/response_interceptor.dart';
 
 const String kContentTypeJson = 'application/json';
 
 @lazySingleton
 final class DioClient {
-  DioClient(Talker talker, ErrorHandler errorHandler) {
+  DioClient(this._talker, this._responseInterceptor) {
     _dio = Dio(
       BaseOptions(
-        baseUrl: appEnv.baseUrl,
+        baseUrl: getIt<AppEnv>().baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         sendTimeout: const Duration(seconds: 10),
@@ -26,7 +26,7 @@ final class DioClient {
     );
 
     _dio.interceptors
-      ..add(ResponseModelInterceptor(errorHandler: errorHandler))
+      ..add(_responseInterceptor)
       ..add(
         RetryInterceptor(
           dio: _dio,
@@ -39,6 +39,7 @@ final class DioClient {
           ignoreRetryEvaluatorExceptions: false,
           retryEvaluator: (error, attempt) {
             final inner = error.error;
+
             if (inner is BusinessException || inner is JsonException) {
               return false;
             }
@@ -63,9 +64,14 @@ final class DioClient {
           },
         ),
       )
-      ..add(TalkerDioLogger(talker: talker));
+      ..add(TalkerDioLogger(talker: _talker));
   }
+
   late final Dio _dio;
 
-  Dio get instance => _dio;
+  final Talker _talker;
+
+  final ResponseInterceptor _responseInterceptor;
+
+  Dio get dio => _dio;
 }

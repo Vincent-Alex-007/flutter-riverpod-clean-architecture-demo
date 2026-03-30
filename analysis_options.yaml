@@ -28,7 +28,6 @@ linter:
     - library_private_types_in_public_api # 公共 API 中避免使用库私有类型
     - no_duplicate_case_values # 避免重复的 case 值
     - non_constant_identifier_names # 非常量标识符命名规范
-    - package_api_docs # 包 API 文档规范
     - package_names # 包命名规范
     - prefer_collection_literals # 推荐使用集合字面量
     - prefer_conditional_assignment # 推荐使用条件赋值

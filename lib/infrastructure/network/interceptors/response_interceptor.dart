@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../errors/error_handler.dart';
 import '../../errors/exceptions.dart';
 import '../response_model.dart';
 
-final class ResponseModelInterceptor extends Interceptor {
-  ResponseModelInterceptor({required this.errorHandler});
-  final ErrorHandler errorHandler;
+@lazySingleton
+final class ResponseInterceptor extends Interceptor {
+  ResponseInterceptor(this._errorHandler);
+  final ErrorHandler _errorHandler;
 
   @override
   void onResponse(
@@ -57,7 +59,7 @@ final class ResponseModelInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     // 统一映射：把 DioException 中的 error => BusinessException / JsonException / NetworkException 其他异常都落成 AppException
-    final mapped = errorHandler.handle(
+    final mapped = _errorHandler.handle(
       err.error ?? err,
       stackTrace: err.stackTrace,
     );
