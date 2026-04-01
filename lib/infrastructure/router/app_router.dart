@@ -1,14 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+import '../../features/counter/counter.dart';
 import '../../features/home/home.dart';
-import '../di/injection.dart';
 
-final List<RouteBase> appRoutes = [...homeRoutes];
+final List<RouteBase> appRoutes = [...homeRoutes, ...counterRoutes];
 
-GoRouter createAppRouter() {
-  return GoRouter(
-    routes: appRoutes,
-    observers: [TalkerRouteObserver(getIt<Talker>())],
-  );
+GoRouter createAppRouter(Talker talker) {
+  return GoRouter(routes: appRoutes, observers: [TalkerRouteObserver(talker)]);
 }

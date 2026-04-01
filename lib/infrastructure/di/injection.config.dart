@@ -16,6 +16,17 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:talker_flutter/talker_flutter.dart' as _i207;
 
+import '../../features/counter/application/get_counter.dart' as _i394;
+import '../../features/counter/application/increment_counter.dart' as _i43;
+import '../../features/counter/domain/counter_local_data_source.dart' as _i234;
+import '../../features/counter/domain/counter_remote_data_source.dart' as _i733;
+import '../../features/counter/domain/counter_repository.dart' as _i1059;
+import '../../features/counter/infrastructure/counter_local_data_source_impl.dart'
+    as _i243;
+import '../../features/counter/infrastructure/counter_remote_data_source_impl.dart'
+    as _i375;
+import '../../features/counter/infrastructure/counter_repository_impl.dart'
+    as _i1047;
 import '../config/app_env.dart' as _i979;
 import '../config/device_timezone.dart' as _i267;
 import '../config/timezone.dart' as _i641;
@@ -51,11 +62,16 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i558.FlutterSecureStorage>(() => storageModule.secureStorage);
-    gh.lazySingleton<_i583.GoRouter>(() => routerModule.appRouter);
     gh.lazySingleton<_i433.ErrorHandler>(() => _i433.ErrorHandler());
+    gh.lazySingleton<_i733.CounterRemoteDataSource>(
+      () => _i375.CounterRemoteDataSourceImpl(),
+    );
     gh.lazySingleton<_i979.AppEnvDev>(
       () => _i979.AppEnvDev(),
       registerFor: {_dev},
+    );
+    gh.lazySingleton<_i583.GoRouter>(
+      () => routerModule.appRouter(gh<_i207.Talker>()),
     );
     gh.lazySingleton<_i292.ResponseInterceptor>(
       () => _i292.ResponseInterceptor(gh<_i433.ErrorHandler>()),
@@ -63,20 +79,38 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i641.Timezone>(
       () => _i641.Timezone(gh<_i267.DeviceTimezone>()),
     );
+    gh.lazySingleton<_i667.DioClient>(
+      () => _i667.DioClient(
+        gh<_i207.Talker>(),
+        gh<_i292.ResponseInterceptor>(),
+        gh<_i979.AppEnv>(),
+      ),
+    );
     gh.lazySingleton<_i979.AppEnvUat>(
       () => _i979.AppEnvUat(),
       registerFor: {_uat},
-    );
-    gh.lazySingleton<_i667.DioClient>(
-      () =>
-          _i667.DioClient(gh<_i207.Talker>(), gh<_i292.ResponseInterceptor>()),
     );
     gh.lazySingleton<_i979.AppEnvProd>(
       () => _i979.AppEnvProd(),
       registerFor: {_prod},
     );
+    gh.lazySingleton<_i234.CounterLocalDataSource>(
+      () => _i243.CounterLocalDataSourceImpl(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i745.AuthInterceptor>(
-      () => _i745.AuthInterceptor(gh<_i667.DioClient>()),
+      () => _i745.AuthInterceptor(gh<_i667.DioClient>(), gh<_i979.AppEnv>()),
+    );
+    gh.lazySingleton<_i1059.CounterRepository>(
+      () => _i1047.CounterRepositoryImpl(
+        gh<_i733.CounterRemoteDataSource>(),
+        gh<_i234.CounterLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i394.GetCounter>(
+      () => _i394.GetCounter(gh<_i1059.CounterRepository>()),
+    );
+    gh.lazySingleton<_i43.IncrementCounter>(
+      () => _i43.IncrementCounter(gh<_i1059.CounterRepository>()),
     );
     return this;
   }

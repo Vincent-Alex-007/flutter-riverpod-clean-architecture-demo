@@ -3,6 +3,7 @@ abstract final class RouterNames {
 
   static const String splash = 'splash';
   static const String home = 'home';
+  static const String counterDemo = 'counterDemo';
 }
 
 abstract final class RouterPaths {
@@ -10,4 +11,5 @@ abstract final class RouterPaths {
 
   static const String splash = '/';
   static const String home = '/home';
+  static const String counterDemo = '/demo/counter';
 }

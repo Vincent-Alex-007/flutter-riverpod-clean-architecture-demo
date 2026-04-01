@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../config/app_env.dart';
-import '../../di/injection.dart';
 import '../dio_client.dart';
 
 class _PendingRequest {
@@ -19,12 +18,12 @@ const String kAuthorizationHeader = 'Authorization';
 
 @lazySingleton
 final class AuthInterceptor extends Interceptor {
-  AuthInterceptor(DioClient dioClient) {
+  AuthInterceptor(DioClient dioClient, AppEnv appEnv) {
     _dio = dioClient.dio;
     // Create a new Dio instance for refreshing tokens
     _tokenRefreshDio = Dio(
       BaseOptions(
-        baseUrl: getIt<AppEnv>().baseUrl,
+        baseUrl: appEnv.baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         headers: {

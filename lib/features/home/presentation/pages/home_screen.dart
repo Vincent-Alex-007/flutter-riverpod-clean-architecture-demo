@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../counter/counter.dart';
+
 class DemoModel {
   DemoModel({
     required this.message,
@@ -42,7 +44,20 @@ class HomeScreen extends StatelessWidget {
                 return Center(child: Text('Error: ${asyncSnapshot.error}'));
               } else {
                 if (asyncSnapshot.hasData) {
-                  return Center(child: Text(asyncSnapshot.data!.message));
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(asyncSnapshot.data!.message),
+                        const SizedBox(height: 24),
+                        FilledButton(
+                          onPressed: () =>
+                              const CounterDemoRoute().push(context),
+                          child: const Text('打开分层架构 Counter Demo'),
+                        ),
+                      ],
+                    ),
+                  );
                 } else {
                   return Center(child: Text('No Data'));
                 }
