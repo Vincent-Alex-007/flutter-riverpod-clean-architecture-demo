@@ -24,7 +24,13 @@ class HomeScreen extends StatelessWidget {
   Future<DemoModel> future() async {
     await Future.delayed(const Duration(seconds: 2));
 
-    return DemoModel(message: '33434', timestamp: DateTime.now(), id: 123, value: 2311.4141, name: 'fsfs');
+    return DemoModel(
+      message: '33434',
+      timestamp: DateTime.now(),
+      id: 123,
+      value: 2311.4141,
+      name: 'fsfs',
+    );
   }
 
   @override
@@ -36,9 +42,9 @@ class HomeScreen extends StatelessWidget {
         builder: (context, asyncSnapshot) {
           switch (asyncSnapshot.connectionState) {
             case ConnectionState.none:
-              return Center(child: Text('No Connection'));
+              return const Center(child: Text('No Connection'));
             case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             case ConnectionState.done:
               if (asyncSnapshot.hasError) {
                 return Center(child: Text('Error: ${asyncSnapshot.error}'));
@@ -59,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return Center(child: Text('No Data'));
+                  return const Center(child: Text('No Data'));
                 }
               }
             default:

@@ -3,67 +3,117 @@ include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
-    - annotate_overrides # 注解覆盖
+    # === 命名规范 ===
+    - camel_case_extensions # 扩展名使用驼峰命名法
+    - camel_case_types # 类型使用驼峰命名法
+    - constant_identifier_names # 常量标识符命名规范
+    - file_names # 文件命名规范
+    - library_names # 库命名规范
+    - library_prefixes # 库前缀规范
+    - non_constant_identifier_names # 非常量标识符命名规范
+    - package_names # 包命名规范
+
+    # === 错误预防 ===
     - await_only_futures # 仅在 Future 上使用 await
     - avoid_empty_else # 避免空的 else 语句
     - avoid_js_rounded_ints # 避免使用 JS 四舍五入整数
-    - avoid_unnecessary_containers # 避免不必要的容器
-    - camel_case_extensions # 扩展名使用驼峰命名法
-    - camel_case_types # 类型使用驼峰命名法
-    - combinators_ordering # 组合子排序
-    - constant_identifier_names # 常量标识符命名规范
-    - curly_braces_in_flow_control_structures # 流控制结构中使用大括号
+    - avoid_print # 避免生产代码中使用 print，应使用统一日志框架
+    - avoid_returning_null_for_future # 避免 Future 函数返回 null
+    - avoid_slow_async_io # 避免同步 IO 方法如 File.existsSync()
+    - avoid_type_to_string # 避免 .runtimeType.toString()，release 模式下行为不同
+    - avoid_web_libraries_in_flutter # 避免在 Flutter 中直接引用 dart:html 等
+    - cancel_subscriptions # 提醒取消 StreamSubscription，防止内存泄漏
+    - close_sinks # 提醒关闭 StreamController，防止内存泄漏
+    - empty_statements # 避免空的语句
+    - exhaustive_cases # 枚举使用详尽的情况
+    - literal_only_boolean_expressions # 检测 if(true) 这类无意义判断
+    - no_adjacent_strings_in_list # 防止列表中遗漏逗号导致字符串拼接
+    - no_duplicate_case_values # 避免重复的 case 值
+    - test_types_in_equals # equals 中检查类型，防止运行时错误
+    - throw_in_finally # 避免在 finally 中 throw
+    - unnecessary_statements # 检测无效语句（如单独写 x + 1 但不赋值）
+    - use_build_context_synchronously # 防止异步后使用已销毁的 BuildContext
+    - use_key_in_widget_constructors # Widget 构造函数应包含 Key 参数
+    - valid_regexps # 有效的正则表达式
+
+    # === 类型与 API 安全 ===
+    - always_declare_return_types # 所有函数声明返回类型
+    - annotate_overrides # 注解覆盖
+    - avoid_void_async # async 函数应返回 Future 而非 void
     - deprecated_member_use_from_same_package # 避免使用同一包中的已弃用成员
+    - library_private_types_in_public_api # 公共 API 中避免使用库私有类型
+    - provide_deprecation_message # 提供弃用消息
+    - strict_top_level_inference # 严格顶级推断
+    - type_annotate_public_apis # 公共 API 类型注释规范
+    - type_init_formals # 类型初始化形式规范
+    - unawaited_futures # 未 await 的 Future 必须用 unawaited() 包裹
+
+    # === Flutter 专属优化 ===
+    - avoid_unnecessary_containers # 避免不必要的容器
+    - prefer_const_constructors # 尽可能使用 const 构造函数，减少 widget 重建
+    - prefer_const_declarations # 可以 const 的声明用 const
+    - prefer_const_literals_to_create_immutables # 不可变集合用 const
+    - sized_box_shrink_expand # SizedBox 使用 shrink 和 expand
+    - sort_child_properties_last # child 属性最后排序，提高 widget 树可读性
+    - use_colored_box # Container(color:) → ColoredBox，性能更好
+    - use_decorated_box # Container(decoration:) → DecoratedBox，性能更好
+    - use_enums # 使用枚举类型
+    - use_super_parameters # 使用 super 参数
+
+    # === 代码风格与简洁 ===
+    - avoid_catches_without_on_clauses # catch 应指定异常类型，不要裸 catch
+    - avoid_positional_boolean_parameters # 避免布尔位置参数 fn(true)，用命名参数
+    - avoid_renaming_method_parameters # 重写方法时保持参数名一致
+    - avoid_return_types_on_setters # setter 不需要返回类型
+    - cascade_invocations # a.b(); a.c() → a..b()..c()
+    - combinators_ordering # 组合子排序
+    - conditional_uri_does_not_exist # 条件导入的 URI 必须存在
+    - curly_braces_in_flow_control_structures # 流控制结构中使用大括号
     - directives_ordering # 推荐使用指令排序
     - empty_constructor_bodies # 避免空的构造函数体
-    - empty_statements # 避免空的语句
     - eol_at_end_of_file # 文件末尾使用换行符
-    - exhaustive_cases # 枚举使用详尽的情况
-    - file_names # 文件命名规范
     - flutter_style_todos # Flutter 风格的待办事项
     - implicit_call_tearoffs # 隐式调用 tearoffs
     - join_return_with_assignment # 使用赋值连接返回
-    - library_names # 库命名规范
-    - library_prefixes # 库前缀规范
-    - library_private_types_in_public_api # 公共 API 中避免使用库私有类型
-    - no_duplicate_case_values # 避免重复的 case 值
-    - non_constant_identifier_names # 非常量标识符命名规范
-    - package_names # 包命名规范
+    - noop_primitive_operations # 检测无意义的操作如 'string'.toString()
+    - omit_local_variable_types # 局部变量用 var/final 而非显式类型
+    - parameter_assignments # 避免重新赋值函数参数
     - prefer_collection_literals # 推荐使用集合字面量
     - prefer_conditional_assignment # 推荐使用条件赋值
+    - prefer_final_in_for_each # for-each 循环变量用 final
+    - prefer_final_locals # 局部变量尽可能用 final
     - prefer_function_declarations_over_variables # 推荐使用函数声明而非变量
     - prefer_generic_function_type_aliases # 推荐使用通用函数类型别名
     - prefer_if_null_operators # 推荐使用 if-null 操作符
     - prefer_inlined_adds # 推荐使用内联添加
     - prefer_initializing_formals # 推荐使用初始化形式参数
+    - prefer_int_literals # 整数字面量不加 .0
     - prefer_is_empty # 推荐使用 isEmpty
     - prefer_relative_imports # 推荐使用相对导入
     - prefer_single_quotes # 推荐使用单引号
     - prefer_spread_collections # 推荐使用扩展集合
-    - provide_deprecation_message # 提供弃用消息
+    - require_trailing_commas # 多参数/多行时要求尾随逗号，Flutter 格式化关键
     - slash_for_doc_comments # 文档注释使用斜杠
-    - sized_box_shrink_expand # SizedBox 使用 shrink 和 expand
-    - sort_child_properties_last # 子属性最后排序
     - sort_constructors_first # 构造函数优先排序
     - sort_pub_dependencies # pub 依赖排序规范
     - sort_unnamed_constructors_first # 未命名构造函数优先排序
-    - strict_top_level_inference # 严格顶级推断
-    - type_annotate_public_apis # 公共 API 类型注释规范
-    - type_init_formals # 类型初始化形式规范
-    - use_build_context_synchronously # 同步使用 BuildContext
-    - use_colored_box # 使用彩色盒子
-    - use_decorated_box # 使用装饰盒子
-    - use_enums # 使用枚举类型
     - use_function_type_syntax_for_parameters # 使用函数类型语法作为参数类型
     - use_rethrow_when_possible # 尽可能使用 rethrow
-    - use_super_parameters # 使用 super 参数
-    - valid_regexps # 有效的正则表达式
+
+    # === 不必要代码清理 ===
     - unnecessary_async # 避免不必要的 async
+    - unnecessary_await_in_return # return await x → return x
     - unnecessary_brace_in_string_interps # 避免字符串插值中不必要的大括号
     - unnecessary_const # 避免不必要的 const
     - unnecessary_constructor_name # 避免不必要的构造函数名称
     - unnecessary_getters_setters # 避免不必要的 getter 和 setter
     - unnecessary_lambdas # 避免不必要的 lambda 表达式
+    - unnecessary_late # 避免不必要的 late
+    - unnecessary_null_checks # 避免不必要的 null 检查
+    - unnecessary_nullable_for_final_variable_declarations # final 变量不需要 ? 如果一定非空
+    - unnecessary_overrides # 避免无意义的 @override
+    - unnecessary_parenthesis # 去掉不必要的括号
+    - unnecessary_raw_strings # 不需要 raw 时不要用 r''
     - unnecessary_string_escapes # 避免不必要的字符串转义
     - unnecessary_string_interpolations # 避免不必要的字符串插值
     - unnecessary_this # 避免不必要的 this

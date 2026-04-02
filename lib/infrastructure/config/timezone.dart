@@ -10,7 +10,7 @@ final class Timezone {
   Timezone(this._deviceTimezone) {
     initializeTimeZones();
 
-    String? ianaName = _deviceTimezone.name?.trim();
+    final ianaName = _deviceTimezone.name?.trim();
 
     final loc = _locationForIana(ianaName);
     location = loc;

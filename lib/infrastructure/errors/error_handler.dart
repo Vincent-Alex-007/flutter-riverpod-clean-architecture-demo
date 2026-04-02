@@ -18,11 +18,11 @@ enum NetworkExceptionMessageEnum {
 @lazySingleton
 final class ErrorHandler {
   AppException handle(Object error, {StackTrace? stackTrace}) {
-    String errorMessage = 'Unknown error: $error';
-    StackTrace? stackTrace0 = stackTrace;
+    var errorMessage = 'Unknown error: $error';
+    var stackTrace0 = stackTrace;
 
     //create a network error fallback
-    AppException<Object?> appException = AppException(
+    var appException = AppException<Object?>(
       message: errorMessage,
       code: -1,
       error: error,
@@ -70,8 +70,8 @@ final class ErrorHandler {
   }
 
   NetworkException _handleDioException(DioException error) {
-    int? code = error.response?.statusCode;
-    String? message = error.message;
+    var code = error.response?.statusCode;
+    var message = error.message;
 
     switch (error.type) {
       case DioExceptionType.connectionTimeout:

@@ -49,7 +49,7 @@ final class AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // 1. Get the token
-    final token = '1234567890';
+    const token = '1234567890';
 
     // 2. If the token exists and the Authorization header is not included, inject it
     if (token.isNotEmpty) {
@@ -60,7 +60,10 @@ final class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     // 1. Check if the status code is 401 and the request is not for the refresh token
     if (err.response?.statusCode == 401 &&
         !err.requestOptions.path.contains(kRefreshUrl)) {
@@ -80,15 +83,15 @@ final class AuthInterceptor extends Interceptor {
         // await _userCubit.saveTokens(access: newAccessToken);
 
         // 5. Retry the current failed request
-        _retryRequest(err.requestOptions, handler, newAccessToken);
+        await _retryRequest(err.requestOptions, handler, newAccessToken);
 
         // 6. Retry all requests in the queue
-        for (var pending in _pendingRequests) {
-          _retryRequest(pending.options, pending.handler, newAccessToken);
+        for (final pending in _pendingRequests) {
+          await _retryRequest(pending.options, pending.handler, newAccessToken);
         }
       } catch (e) {
         // 7. Handle refresh failure
-        _handleRefreshFailure(e, err, handler);
+        await _handleRefreshFailure(e, err, handler);
       } finally {
         // 8. Clean up the state
         _isRefreshing = false;
@@ -101,7 +104,7 @@ final class AuthInterceptor extends Interceptor {
 
   /// Refresh the token, with exponential backoff retry mechanism
   Future<String> _refreshTokenWithRetry({int maxRetries = 2}) async {
-    final refreshToken = '1234567890';
+    const refreshToken = '1234567890';
 
     if (refreshToken.isEmpty) {
       throw DioException(
@@ -112,7 +115,7 @@ final class AuthInterceptor extends Interceptor {
     }
 
     //Exponential backoff retry
-    for (int attempt = 0; attempt <= maxRetries; attempt++) {
+    for (var attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         //Send the request using _tokenRefreshDio, bypassing the interceptor
         final response = await _tokenRefreshDio.post(
@@ -165,7 +168,7 @@ final class AuthInterceptor extends Interceptor {
     DioException originalError,
     ErrorInterceptorHandler handler,
   ) async {
-    bool shouldLogout = true;
+    var shouldLogout = true;
 
     if (error is DioException) {
       final type = error.type;
@@ -201,7 +204,7 @@ final class AuthInterceptor extends Interceptor {
     handler.reject(originalError);
 
     // Reject all requests in the queue
-    for (var pending in _pendingRequests) {
+    for (final pending in _pendingRequests) {
       pending.handler.reject(originalError);
     }
   }

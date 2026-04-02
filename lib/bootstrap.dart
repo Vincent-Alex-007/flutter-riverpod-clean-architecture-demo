@@ -27,7 +27,7 @@ Future<void> bootstrap(
   );
 
   // Run the application
-  runZonedGuarded(
+  await runZonedGuarded(
     () async => runApp(
       UncontrolledProviderScope(container: container, child: await builder()),
     ),
