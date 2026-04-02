@@ -1,4 +1,7 @@
 {
   "@@locale": "ko",
-  "@@context": "한국어"
+  "@@context": "한국어",
+  "counter_demo_title": "카운터",
+  "counter_demo_description": "이것은 카운터 설명입니다.",
+  "counter_demo_button_text": "증가"
 }

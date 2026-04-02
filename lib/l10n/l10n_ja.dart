@@ -7,4 +7,13 @@ import 'l10n.dart';
 /// The translations for Japanese (`ja`).
 class L10nJa extends L10n {
   L10nJa([String locale = 'ja']) : super(locale);
+
+  @override
+  String get counter_demo_title => 'カウンター';
+
+  @override
+  String get counter_demo_description => 'これはカウンターの説明です。';
+
+  @override
+  String get counter_demo_button_text => 'カウントを増やす';
 }
