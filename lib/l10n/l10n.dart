@@ -112,6 +112,24 @@ abstract class L10n {
       scriptCode: 'Hans',
     ),
   ];
+
+  /// No description provided for @counter_demo_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Counter'**
+  String get counter_demo_title;
+
+  /// No description provided for @counter_demo_description.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a counter description.'**
+  String get counter_demo_description;
+
+  /// No description provided for @counter_demo_button_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Increment'**
+  String get counter_demo_button_text;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

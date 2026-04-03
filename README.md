@@ -6,7 +6,10 @@ A new Flutter project.
 fvm dart run build_runner build --delete-conflicting-outputs
 
 fvm dart run build_runner watch --delete-conflicting-outputs
+
+fvm flutter gen-l10n
 ```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

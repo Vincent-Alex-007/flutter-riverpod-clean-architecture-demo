@@ -1,4 +1,7 @@
 {
   "@@locale": "es",
-  "@@context": "Español"
+  "@@context": "Español",
+  "counter_demo_title": "Contador",
+  "counter_demo_description": "Este es un contador.",
+  "counter_demo_button_text": "Incrementar"
 }

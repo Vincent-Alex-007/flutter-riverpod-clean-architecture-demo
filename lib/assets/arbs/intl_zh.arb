@@ -1,4 +1,7 @@
 {
   "@@locale": "zh",
-  "@@context": "中文简体"
+  "@@context": "中文简体",
+  "counter_demo_title": "计数器",
+  "counter_demo_description": "这是一个计数器描述。",
+  "counter_demo_button_text": "增加"
 }

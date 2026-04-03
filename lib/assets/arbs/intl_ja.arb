@@ -1,4 +1,7 @@
 {
   "@@locale": "ja",
-  "@@context": "日本語"
+  "@@context": "日本語",
+  "counter_demo_title": "カウンター",
+  "counter_demo_description": "これはカウンターの説明です。",
+  "counter_demo_button_text": "カウントを増やす"
 }

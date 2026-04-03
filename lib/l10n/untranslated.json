@@ -1,1 +1,11 @@
-{}
+{
+  "en_US": [
+    "counter_demo_button_text"
+  ],
+
+  "zh_Hans_CN": [
+    "counter_demo_title",
+    "counter_demo_description",
+    "counter_demo_button_text"
+  ]
+}

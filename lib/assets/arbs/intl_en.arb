@@ -1,4 +1,7 @@
 {
   "@@locale": "en",
-  "@@context": "English"
+  "@@context": "English",
+  "counter_demo_title": "Counter",
+  "counter_demo_description": "This is a counter description.",
+  "counter_demo_button_text": "Increment"
 }
