@@ -18,7 +18,6 @@ linter:
     - avoid_empty_else # 避免空的 else 语句
     - avoid_js_rounded_ints # 避免使用 JS 四舍五入整数
     - avoid_print # 避免生产代码中使用 print，应使用统一日志框架
-    - avoid_returning_null_for_future # 避免 Future 函数返回 null
     - avoid_slow_async_io # 避免同步 IO 方法如 File.existsSync()
     - avoid_type_to_string # 避免 .runtimeType.toString()，release 模式下行为不同
     - avoid_web_libraries_in_flutter # 避免在 Flutter 中直接引用 dart:html 等
