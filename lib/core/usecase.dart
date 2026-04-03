@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'result.dart';
 
@@ -13,28 +12,25 @@ import 'result.dart';
 /// 用法：
 /// ```dart
 /// class GetPaymentDetail extends UseCase<int, PaymentDetailsRsp> {
-///   GetPaymentDetail({required super.ref});
+///   GetPaymentDetail();
 ///
 ///   @override
 ///   Future<Result<PaymentDetailsRsp>> execute(int orderId) async {
-///     final repo = ref.read(paymentRepositoryProvider);
-///     return Result.success(await repo.getPaymentDetail(orderId));
+///     return Result.success(await repository.getPaymentDetail(orderId));
 ///   }
 /// }
 /// ```
 abstract class UseCase<Params, T> {
-  const UseCase({required this.ref});
-  @protected
-  final Ref ref;
+  const UseCase();
 
   /// 子类实现具体业务逻辑
   @protected
-  Future<Result<T>> execute(Params params);
+  Future<Result<T>> _execute(Params params);
 
   /// 调用 UseCase，自动捕获异常
   Future<Result<T>> call(Params params) async {
     try {
-      return await execute(params);
+      return await _execute(params);
     } catch (e, s) {
       debugPrint('UseCase [$runtimeType] failed: $e');
       return Result.failure(e, s);
@@ -49,19 +45,16 @@ abstract class UseCase<Params, T> {
 /// 用法：
 /// ```dart
 /// class GetPaymentMethods extends NoParamsUseCase<List<PaymentMethodItem>> {
-///   GetPaymentMethods({required super.ref});
+///   GetPaymentMethods();
 ///
 ///   @override
 ///   Future<Result<List<PaymentMethodItem>>> execute() async {
-///     final repo = ref.read(paymentRepositoryProvider);
-///     return Result.success(await repo.getPaymentMethod());
+///     return Result.success(await repository.getPaymentMethod());
 ///   }
 /// }
 /// ```
 abstract class NoParamsUseCase<T> {
-  const NoParamsUseCase({required this.ref});
-  @protected
-  final Ref ref;
+  const NoParamsUseCase();
 
   /// 子类实现具体业务逻辑
   @protected
@@ -80,16 +73,14 @@ abstract class NoParamsUseCase<T> {
 
 /// 同步 UseCase 基类（无需 async 的场景）。
 abstract class SyncUseCase<Params, T> {
-  const SyncUseCase({required this.ref});
-  @protected
-  final Ref ref;
+  const SyncUseCase();
 
   @protected
-  Result<T> execute(Params params);
+  Result<T> _execute(Params params);
 
   Result<T> call(Params params) {
     try {
-      return execute(params);
+      return _execute(params);
     } catch (e, s) {
       debugPrint('SyncUseCase [$runtimeType] failed: $e');
       return Result.failure(e, s);

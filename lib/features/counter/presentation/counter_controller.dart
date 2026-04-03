@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/usecase.dart';
 import '../../../infrastructure/di/injection.dart';
 import '../application/get_counter.dart';
 import '../application/increment_counter.dart';
@@ -12,21 +11,26 @@ part 'counter_controller.g.dart';
 @riverpod
 class CounterDemo extends _$CounterDemo {
   @override
-  Future<CounterLoadResult> build() =>
-      getIt<GetCounter>()(const NoParams());
+  FutureOr<CounterLoadResult> build() async {
+    final result = await getIt<GetCounter>().call();
+    return result.dataOrElse(
+      const CounterLoadResult(
+        value: 0,
+        source: CounterValueSource.localFallback,
+      ),
+    );
+  }
 
   Future<void> increment() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(
-      () => getIt<IncrementCounter>()(const NoParams()),
-    );
+    final result = await getIt<IncrementCounter>().call();
+    state = AsyncValue.data(result.dataOrNull!);
   }
 
   /// 再次走「加载」用例（远程优先 + 本地兜底），用于下拉刷新等。
   Future<void> reload() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(
-      () => getIt<GetCounter>()(const NoParams()),
-    );
+    final result = await getIt<GetCounter>().call();
+    state = AsyncValue.data(result.dataOrNull!);
   }
 }
