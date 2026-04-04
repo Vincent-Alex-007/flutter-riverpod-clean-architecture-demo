@@ -3,7 +3,7 @@
 arb-dir: lib/assets/arbs
 
 # 模板 ARB 文件
-template-arb-file: intl_en.arb
+template-arb-file: en.arb
 
 # 生成的本地化文件输出目录
 output-dir: lib/l10n

@@ -44,10 +44,10 @@ final class ResponseInterceptor extends Interceptor {
       handler.reject(
         DioException(
           requestOptions: response.requestOptions,
-          error: AppException(
+          error: AppException<Object?>(
             message: e.toString(),
             code: -1,
-            error: e,
+            cause: e,
             stackTrace: s,
           ),
           type: DioExceptionType.unknown,

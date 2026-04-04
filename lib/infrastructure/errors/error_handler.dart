@@ -24,8 +24,7 @@ final class ErrorHandler {
     //create a network error fallback
     var appException = AppException<Object?>(
       message: errorMessage,
-      code: -1,
-      error: error,
+      cause: error,
       stackTrace: stackTrace0,
     );
 
@@ -57,8 +56,7 @@ final class ErrorHandler {
     if (error is FormatException || error is TypeError) {
       final ex = JsonException(
         message: 'Data parsing error',
-        code: -1,
-        error: error,
+        cause: error,
         stackTrace: stackTrace0,
       );
 
@@ -109,7 +107,7 @@ final class ErrorHandler {
     return NetworkException(
       message: message,
       code: code,
-      error: error,
+      cause: error,
       stackTrace: error.stackTrace,
     );
   }

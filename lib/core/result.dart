@@ -50,8 +50,6 @@ final class _ResultError<ValueT> extends Result<ValueT> {
       '$runtimeType:ResultError(error: $error, stackTrace: $stackTrace)';
 }
 
-// ==================== Result 扩展 ====================
-
 extension ResultExtensionX<ValueT> on Result<ValueT> {
   ValueT? get dataOrNull => whenOrNull(data: (value) => value);
 
