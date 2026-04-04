@@ -47,3 +47,4 @@ targets:
               directory_path_enabled: true
               # 类名
               class_name: Assets
+

@@ -13,6 +13,6 @@ final class IncrementCounter extends NoParamsUseCase<CounterLoadResult> {
 
   @override
   Future<Result<CounterLoadResult>> execute() async {
-    return Result.success(await _repository.increment());
+    return Result.data(await _repository.increment());
   }
 }

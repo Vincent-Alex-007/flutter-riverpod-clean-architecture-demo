@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../domain/counter_load_result.dart';
-import '../counter_controller.dart';
+import '../providers/counter_riverpod.dart';
 
 class CounterDemoScreen extends ConsumerWidget {
   const CounterDemoScreen({super.key});
@@ -16,12 +16,12 @@ class CounterDemoScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncResult = ref.watch(counterDemoProvider);
+    final asyncResult = ref.watch(counterRiverpodProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('分层 Demo · 远程 + 本地')),
       body: RefreshIndicator(
-        onRefresh: () => ref.read(counterDemoProvider.notifier).reload(),
+        onRefresh: () => ref.read(counterRiverpodProvider.notifier).reload(),
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(24),
@@ -31,22 +31,22 @@ class CounterDemoScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    '${result.value}',
+                    '${result?.value}',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    _sourceLabel(result.source),
+                    _sourceLabel(result?.source ?? CounterValueSource.remote),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                   ),
                   const SizedBox(height: 28),
                   FilledButton(
                     onPressed: () =>
-                        ref.read(counterDemoProvider.notifier).increment(),
+                        ref.read(counterRiverpodProvider.notifier).increment(),
                     child: const Text('自增（写本地 → 模拟推送远程）'),
                   ),
                   const SizedBox(height: 16),

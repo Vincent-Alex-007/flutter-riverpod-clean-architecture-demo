@@ -4,8 +4,8 @@ import 'package:injectable/injectable.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+import '../../core/exceptions.dart';
 import '../config/app_env.dart';
-import '../errors/exceptions.dart';
 import 'interceptors/response_interceptor.dart';
 
 const String kContentTypeJson = 'application/json';

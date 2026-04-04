@@ -1,190 +1,125 @@
-// ==================== Result ====================
+sealed class Result<ValueT> {
+  const Result._();
 
-/// 统一的业务结果类型，替代 bool 返回值和 try-catch 模式。
-///
-/// 用法：
-/// ```dart
-/// final result = await someUseCase(params);
-/// switch (result) {
-///   case Success(:final data):
-///     // 处理成功
-///   case Failure(:final exception, :final stackTrace):
-///     // 处理失败
-/// }
-///
-/// // 或者使用便捷方法
-/// result.when(
-///   success: (data) => print(data),
-///   failure: (e, s) => print(e),
-/// );
-/// ```
-sealed class Result<T> {
-  const Result();
+  const factory Result.data(ValueT value) = _ResultData<ValueT>;
 
-  /// 创建成功结果
-  const factory Result.success(T data) = Success<T>;
+  const factory Result.error(Object error, StackTrace stackTrace) =
+      _ResultError<ValueT>;
 
-  /// 创建失败结果
-  const factory Result.failure(Object exception, [StackTrace? stackTrace]) = Failure<T>;
+  bool get hasData => this is _ResultData<ValueT>;
 
-  /// 是否成功
-  bool get isSuccess => this is Success<T>;
+  bool get hasError => this is _ResultError<ValueT>;
 
-  /// 是否失败
-  bool get isFailure => this is Failure<T>;
+  ValueT? get value;
 
-  /// 获取成功数据，失败时返回 null
-  T? get dataOrNull => switch (this) {
-        Success(:final data) => data,
-        Failure() => null,
-      };
+  Object? get error;
 
-  /// 获取成功数据，失败时返回 [defaultValue]
-  T dataOrElse(T defaultValue) => switch (this) {
-        Success(:final data) => data,
-        Failure() => defaultValue,
-      };
-
-  /// 模式匹配，必须同时处理成功和失败。
-  ///
-  /// ```dart
-  /// // 示例1：在 UI 层根据结果展示不同内容
-  /// final result = await getPaymentDetail(orderId);
-  /// final message = result.when(
-  ///   success: (detail) => '应付金额: ${detail.payAmount}',
-  ///   failure: (e, s) => '获取支付详情失败: $e',
-  /// );
-  ///
-  /// // 示例2：在控制器中处理支付结果
-  /// final payResult = await processPayment(params);
-  /// payResult.when(
-  ///   success: (transaction) {
-  ///     KPToast.show('支付成功');
-  ///     navigator.pushPaymentResult(transaction);
-  ///   },
-  ///   failure: (e, s) {
-  ///     KPToast.show('支付失败: $e');
-  ///     debugPrint('$s');
-  ///   },
-  /// );
-  ///
-  /// // 示例3：转换为 AsyncValue 供 Riverpod 使用
-  /// state = result.when(
-  ///   success: (data) => AsyncData(data),
-  ///   failure: (e, s) => AsyncError(e, s ?? StackTrace.current),
-  /// );
-  /// ```
-  R when<R>({
-    required R Function(T data) success,
-    required R Function(Object exception, StackTrace? stackTrace) failure,
-  }) =>
-      switch (this) {
-        Success(:final data) => success(data),
-        Failure(:final exception, :final stackTrace) => failure(exception, stackTrace),
-      };
-
-  /// 模式匹配（只关心部分情况时使用）。
-  ///
-  /// ```dart
-  /// // 示例1：只关心成功，失败时返回默认值
-  /// final methods = result.maybeWhen(
-  ///   success: (list) => list.where((m) => m.paymentState == 1).toList(),
-  ///   orElse: () => <PaymentMethodItem>[],
-  /// );
-  ///
-  /// // 示例2：只关心失败（用于错误上报），成功时不做额外处理
-  /// result.maybeWhen(
-  ///   failure: (e, s) {
-  ///     errorReporter.report(e, s);
-  ///     return null;
-  ///   },
-  ///   orElse: () => null,
-  /// );
-  /// ```
-  R maybeWhen<R>({
-    required R Function() orElse,
-    R Function(T data)? success,
-    R Function(Object exception, StackTrace? stackTrace)? failure,
-  }) =>
-      switch (this) {
-        Success(:final data) => success != null ? success(data) : orElse(),
-        Failure(:final exception, :final stackTrace) => failure != null ? failure(exception, stackTrace) : orElse(),
-      };
-
-  /// 同步转换成功数据的类型，失败时原样透传。
-  ///
-  /// ```dart
-  /// // 示例1：从支付详情中提取商品列表
-  /// final Result<List<CartProductItem>> itemsResult =
-  ///     detailResult.map((detail) => detail.cartItemList);
-  ///
-  /// // 示例2：将金额格式化为字符串
-  /// final Result<String> display =
-  ///     amountResult.map((amount) => '${currency.symbol}${amount.toStringAsFixed(2)}');
-  ///
-  /// // 示例3：多次 map 链式转换
-  /// final Result<int> count = getPaymentDetail(orderId)
-  ///     .map((detail) => detail.billList)
-  ///     .map((bills) => bills.where((b) => b.billState == 3).length);
-  /// ```
-  Result<R> map<R>(R Function(T data) transform) => switch (this) {
-        Success(:final data) => Result.success(transform(data)),
-        Failure(:final exception, :final stackTrace) => Result.failure(exception, stackTrace),
-      };
-
-  /// 链式异步转换，用于将多个可能失败的异步操作串联。
-  /// 前一步失败时会短路，不再执行后续操作。
-  ///
-  /// ```dart
-  /// // 示例1：获取支付详情 → 拆分 → 发起支付（任意一步失败即中断）
-  /// final result = await getPaymentDetail(orderId)
-  ///     .flatMap((detail) => splitByAmount(detail.orderId, amount))
-  ///     .flatMap((bill) => processPayment(bill.billId, paymentMethod));
-  ///
-  /// // 示例2：校验订单 → 创建交易记录 → 调用 POS 设备
-  /// final result = await validateOrder(orderId).flatMap((order) async {
-  ///   final record = await createLocalPaymentRecords(order);
-  ///   return record.flatMap((r) => sendToPosDevice(r.outTradeNo));
-  /// });
-  ///
-  /// // 示例3：配合 mapResult / flatMapResult 扩展方法在 Future 上直接链式调用
-  /// final result = await getPaymentDetail(orderId)          // Future<Result<Detail>>
-  ///     .mapResult((detail) => detail.billList)              // Future<Result<List<Bill>>>
-  ///     .flatMapResult((bills) => payFirstBill(bills.first));// Future<Result<Transaction>>
-  /// ```
-  Future<Result<R>> flatMap<R>(Future<Result<R>> Function(T data) transform) async => switch (this) {
-        Success(:final data) => await transform(data),
-        Failure(:final exception, :final stackTrace) => Result.failure(exception, stackTrace),
-      };
+  StackTrace? get stackTrace;
 }
 
-final class Success<T> extends Result<T> {
-  final T data;
-  const Success(this.data);
+final class _ResultData<ValueT> extends Result<ValueT> {
+  const _ResultData(this.value) : super._();
 
   @override
-  String toString() => 'Success($data)';
+  final ValueT value;
+
+  @override
+  Object? get error => null;
+
+  @override
+  StackTrace? get stackTrace => null;
+
+  @override
+  String toString() => '$runtimeType:ResultData(data: $value)';
 }
 
-final class Failure<T> extends Result<T> {
-  final Object exception;
-  final StackTrace? stackTrace;
-  const Failure(this.exception, [this.stackTrace]);
+final class _ResultError<ValueT> extends Result<ValueT> {
+  const _ResultError(this.error, this.stackTrace) : super._();
 
   @override
-  String toString() => 'Failure($exception)';
+  final Object error;
+
+  @override
+  final StackTrace stackTrace;
+
+  @override
+  ValueT? get value => null;
+
+  @override
+  String toString() =>
+      '$runtimeType:ResultError(error: $error, stackTrace: $stackTrace)';
 }
 
 // ==================== Result 扩展 ====================
 
-extension ResultFutureX<T> on Future<Result<T>> {
-  /// 对 Future<Result<T>> 直接链式 map
-  Future<Result<R>> mapResult<R>(R Function(T data) transform) async {
-    return (await this).map(transform);
-  }
+extension ResultExtensionX<ValueT> on Result<ValueT> {
+  ValueT? get dataOrNull => whenOrNull(data: (value) => value);
 
-  /// 对 Future<Result<T>> 直接链式 flatMap
-  Future<Result<R>> flatMapResult<R>(Future<Result<R>> Function(T data) transform) async {
-    return (await this).flatMap(transform);
-  }
+  Object? get errorOrNull => whenOrNull(err: (error, _) => error);
+
+  StackTrace? get stackTraceOrNull => whenOrNull(err: (_, stack) => stack);
+
+  NewT when<NewT>({
+    required NewT Function(ValueT value) data,
+    required NewT Function(Object error, StackTrace stackTrace) err,
+  }) => switch (this) {
+    _ResultData(:final value) => data(value),
+    _ResultError(:final error, :final stackTrace) => err(error, stackTrace),
+  };
+
+  NewT whenOrElse<NewT>({
+    required NewT Function() orElse,
+    NewT Function(ValueT value)? data,
+    NewT Function(Object error, StackTrace stackTrace)? err,
+  }) =>
+      when(data: data ?? (_) => orElse(), err: err ?? (err, stack) => orElse());
+
+  NewT? whenOrNull<NewT>({
+    NewT Function(ValueT value)? data,
+    NewT Function(Object error, StackTrace stackTrace)? err,
+  }) => when(data: data ?? (_) => null, err: err ?? (err, stack) => null);
+
+  NewT map<NewT>({
+    required NewT Function(Result<ValueT> data) data,
+    required NewT Function(Result<ValueT> error) error,
+  }) => switch (this) {
+    _ResultData() => data(this),
+    _ResultError() => error(this),
+  };
+
+  NewT mapOrElse<NewT>({
+    NewT Function(Result<ValueT> data)? data,
+    NewT Function(Result<ValueT> error)? error,
+    required NewT Function() orElse,
+  }) => map(
+    data: (value) => data != null ? data(value) : orElse(),
+    error: (err) => error != null ? error(err) : orElse(),
+  );
+
+  NewT? mapOrNull<NewT>({
+    NewT? Function(Result<ValueT> value)? data,
+    NewT? Function(Result<ValueT> error)? error,
+  }) => map(
+    data: (value) => data != null ? data(value) : null,
+    error: (err) => error != null ? error(err) : null,
+  );
+
+  Result<NewT> link<NewT>(NewT Function(ValueT value) transform) =>
+      switch (this) {
+        _ResultData(:final value) => Result.data(transform(value)),
+        _ResultError(:final error, :final stackTrace) => Result.error(
+          error,
+          stackTrace,
+        ),
+      };
+
+  Future<Result<NewT>> flatLink<NewT>(
+    Future<Result<NewT>> Function(ValueT value) data,
+  ) async => switch (this) {
+    _ResultData(:final value) => await data(value),
+    _ResultError(:final error, :final stackTrace) => _ResultError(
+      error,
+      stackTrace,
+    ),
+  };
 }

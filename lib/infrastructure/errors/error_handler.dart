@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import 'exceptions.dart';
+import '../../core/exceptions.dart';
 
 enum NetworkExceptionMessageEnum {
   connectionTimeout('CONNECTION_TIMEOUT'),

@@ -12,7 +12,7 @@ output-dir: lib/l10n
 output-class: L10n
 
 # 输出本地化文件
-output-localization-file: l10n.dart
+output-localization-file: l10n.g.dart
 
 # 添加支持的语言列表
 preferred-supported-locales:
