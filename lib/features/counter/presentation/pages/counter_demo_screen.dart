@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../domain/counter_load_result.dart';
+import '../../domain/entities/counter_load_result.dart';
 import '../providers/counter_riverpod.dart';
 
 class CounterDemoScreen extends ConsumerWidget {

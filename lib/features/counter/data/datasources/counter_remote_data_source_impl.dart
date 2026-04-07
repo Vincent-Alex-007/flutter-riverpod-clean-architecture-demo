@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../infrastructure/network/response_model.dart';
-import '../domain/counter_remote_data_source.dart';
-import 'remote/counter_remote_dto.dart';
+import '../../../../infrastructure/network/response_model.dart';
+import '../dto/counter_remote_dto.dart';
+import 'counter_remote_data_source.dart';
 
 /// 模拟远程：先走「信封 + DTO」解析，再映射为 [int] 交给仓库。
 ///

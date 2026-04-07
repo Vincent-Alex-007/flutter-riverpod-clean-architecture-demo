@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../domain/counter_local_data_source.dart';
+import 'counter_local_data_source.dart';
 
 @LazySingleton(as: CounterLocalDataSource)
 final class CounterLocalDataSourceImpl implements CounterLocalDataSource {

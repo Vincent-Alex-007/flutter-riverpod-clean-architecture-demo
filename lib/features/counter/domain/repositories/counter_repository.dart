@@ -1,4 +1,4 @@
-import 'counter_load_result.dart';
+import '../entities/counter_load_result.dart';
 
 /// 领域仓库：编排远程 + 本地，不暴露具体 IO 细节。
 abstract interface class CounterRepository {

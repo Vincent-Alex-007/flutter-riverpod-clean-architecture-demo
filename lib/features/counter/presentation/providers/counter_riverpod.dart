@@ -1,9 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../infrastructure/di/injection.dart';
-import '../../application/get_counter.dart';
-import '../../application/increment_counter.dart';
-import '../../domain/counter_load_result.dart';
+import '../../domain/entities/counter_load_result.dart';
+import '../../domain/usecases/get_counter.dart';
+import '../../domain/usecases/increment_counter.dart';
 
 part 'counter_riverpod.g.dart';
 
