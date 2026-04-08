@@ -37,6 +37,7 @@ import '../errors/error_handler.dart' as _i433;
 import '../services/network/dio_client.dart' as _i981;
 import '../services/network/interceptors/auth_interceptor.dart' as _i304;
 import '../services/network/interceptors/response_interceptor.dart' as _i92;
+import '../services/websocket/websocket_client.dart' as _i1005;
 import 'modules/log_module.dart' as _i417;
 import 'modules/router_module.dart' as _i322;
 import 'modules/storage_module.dart' as _i148;
@@ -96,6 +97,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i92.ResponseInterceptor>(),
         gh<_i979.AppEnv>(),
       ),
+    );
+    gh.lazySingleton<_i1005.WebSocketClient>(
+      () => _i1005.WebSocketClient(gh<_i207.Talker>(), gh<_i979.AppEnv>()),
+      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i976.CounterLocalDataSource>(
       () => _i155.CounterLocalDataSourceImpl(gh<_i460.SharedPreferences>()),

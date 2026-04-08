@@ -8,6 +8,8 @@ part 'app_env.g.dart';
 abstract interface class AppEnv {
   String get baseUrl;
 
+  String get wsUrl;
+
   AppEnvEnum get env;
 }
 
@@ -18,8 +20,14 @@ final class AppEnvDev implements AppEnv {
   @EnviedField(varName: 'BASE_URL')
   static const String _baseUrl = _AppEnvDev._baseUrl;
 
+  @EnviedField(varName: 'WS_URL')
+  static const String _wsUrl = _AppEnvDev._wsUrl;
+
   @override
   String get baseUrl => _baseUrl;
+
+  @override
+  String get wsUrl => _wsUrl;
 
   @override
   AppEnvEnum get env => AppEnvEnum.dev;
@@ -32,8 +40,14 @@ final class AppEnvProd implements AppEnv {
   @EnviedField(varName: 'BASE_URL')
   static final String _baseUrl = _AppEnvProd._baseUrl;
 
+  @EnviedField(varName: 'WS_URL', obfuscate: true)
+  static final String _wsUrl = _AppEnvProd._wsUrl;
+
   @override
   String get baseUrl => _baseUrl;
+
+  @override
+  String get wsUrl => _wsUrl;
 
   @override
   AppEnvEnum get env => AppEnvEnum.prod;
@@ -46,8 +60,14 @@ final class AppEnvUat implements AppEnv {
   @EnviedField(varName: 'BASE_URL')
   static const String _baseUrl = _AppEnvUat._baseUrl;
 
+  @EnviedField(varName: 'WS_URL')
+  static const String _wsUrl = _AppEnvUat._wsUrl;
+
   @override
   String get baseUrl => _baseUrl;
+
+  @override
+  String get wsUrl => _wsUrl;
 
   @override
   AppEnvEnum get env => AppEnvEnum.uat;
