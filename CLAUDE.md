@@ -43,10 +43,37 @@ fvm flutter test test/widget_test.dart   # 单个测试
 
 每个 feature 有一个桶文件（`lib/features/<name>/<name>.dart`），是该 feature 的**唯一对外入口**。外部代码必须通过此桶文件导入，未 export 的类型视为模块私有。feature 内部子目录之间按分层引用。
 
-### 依赖注入：双系统
+### 依赖注入：双系统（get_it + injectable ｜ Riverpod）
 
-- **get_it + injectable** — 服务层 DI。类上标注 `@LazySingleton`、`@Injectable` 等，代码生成产出 `injection.config.dart`。通过 `configureDependencies(env)` 按环境（dev/uat/prod）配置。
-- **Riverpod（riverpod_annotation + riverpod_generator）** — UI 状态管理。Provider 使用 `@riverpod` 注解，代码生成产出 `*.g.dart`。Provider 内通过 `getIt<UseCase>()` 获取用例实例。
+#### 职责划分
+
+| 层 | 管理方式 | 说明 |
+|---|---|---|
+| 基础设施服务 | **get_it + injectable** | Talker、SharedPreferences、AppDatabase、DioClient、GoRouter 等全局单例 |
+| Data 层 | **get_it + injectable** | DataSource 实现、Repository 实现，通过 `@LazySingleton(as: Interface)` 绑定接口 |
+| Domain 层 | **get_it + injectable** | UseCase，通过 `@LazySingleton` 注册，构造函数自动注入 Repository |
+| Feature 组合 | **get_it + injectable** | 上述三层的接线均由 injectable 代码生成自动完成 |
+| UI 状态 | **Riverpod** | `@riverpod` 注解的 Notifier/Provider，管理页面状态与交互逻辑 |
+
+#### 边界规则
+
+1. **get_it 管对象图，Riverpod 管 UI 状态** — 所有非 UI 的依赖（服务、数据源、仓库、用例）一律注册到 get_it。Riverpod Provider 只出现在 `presentation/providers/` 目录下。
+2. **Riverpod Provider 通过 `getIt<T>()` 获取用例** — Provider 内部不使用 `ref.watch` 获取业务依赖，而是直接从 get_it 取。`ref.watch` / `ref.read` 仅用于 Provider 之间的状态依赖。
+3. **禁止在 data/domain 层引用 Riverpod** — data 和 domain 层代码不得导入任何 Riverpod 包，保持纯 Dart。
+4. **禁止在 UI 层直接使用 `getIt<T>()`** — Widget 中只通过 `ref.watch(xxxProvider)` 获取状态，不直接调用 get_it。唯一允许调用 `getIt` 的 UI 层代码是 Riverpod Provider 定义内部。
+5. **环境切换** — `configureDependencies(env)` 在 `bootstrap()` 中按 `AppEnvEnum` 调用，injectable 通过 `@Environment` 注解区分环境实现。
+
+#### get_it 配置
+
+- 入口：`lib/infrastructure/di/injection.dart` — 暴露 `getIt` 实例和 `configureDependencies()` 函数
+- 生成文件：`lib/infrastructure/di/injection.config.dart`
+- 模块：`lib/infrastructure/di/modules/` — 按职责拆分（config、database、log、network、storage、router）
+
+#### Riverpod 使用范围
+
+- 仅在 `lib/features/<name>/presentation/providers/` 中定义
+- 使用 `@riverpod` 注解 + riverpod_generator 代码生成
+- Notifier 内通过 `getIt<UseCase>()` 获取用例，不在 Provider 中重建业务对象
 
 ### 核心抽象（`lib/core/`）
 
