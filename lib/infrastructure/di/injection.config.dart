@@ -34,9 +34,9 @@ import '../config/app_env.dart' as _i979;
 import '../config/device_timezone.dart' as _i267;
 import '../config/timezone.dart' as _i641;
 import '../errors/error_handler.dart' as _i433;
-import '../services/network/dio_client.dart' as _i667;
-import '../services/network/interceptors/auth_interceptor.dart' as _i745;
-import '../services/network/interceptors/response_interceptor.dart' as _i292;
+import '../services/network/dio_client.dart' as _i981;
+import '../services/network/interceptors/auth_interceptor.dart' as _i304;
+import '../services/network/interceptors/response_interceptor.dart' as _i92;
 import 'modules/log_module.dart' as _i417;
 import 'modules/router_module.dart' as _i322;
 import 'modules/storage_module.dart' as _i148;
@@ -76,18 +76,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i583.GoRouter>(
       () => routerModule.appRouter(gh<_i207.Talker>()),
     );
-    gh.lazySingleton<_i292.ResponseInterceptor>(
-      () => _i292.ResponseInterceptor(gh<_i433.ErrorHandler>()),
+    gh.lazySingleton<_i92.ResponseInterceptor>(
+      () => _i92.ResponseInterceptor(gh<_i433.ErrorHandler>()),
     );
     gh.singleton<_i641.Timezone>(
       () => _i641.Timezone(gh<_i267.DeviceTimezone>()),
-    );
-    gh.lazySingleton<_i667.DioClient>(
-      () => _i667.DioClient(
-        gh<_i207.Talker>(),
-        gh<_i292.ResponseInterceptor>(),
-        gh<_i979.AppEnv>(),
-      ),
     );
     gh.lazySingleton<_i979.AppEnvUat>(
       () => _i979.AppEnvUat(),
@@ -97,17 +90,24 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i979.AppEnvProd(),
       registerFor: {_prod},
     );
+    gh.lazySingleton<_i981.DioClient>(
+      () => _i981.DioClient(
+        gh<_i207.Talker>(),
+        gh<_i92.ResponseInterceptor>(),
+        gh<_i979.AppEnv>(),
+      ),
+    );
     gh.lazySingleton<_i976.CounterLocalDataSource>(
       () => _i155.CounterLocalDataSourceImpl(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i304.AuthInterceptor>(
+      () => _i304.AuthInterceptor(gh<_i981.DioClient>(), gh<_i979.AppEnv>()),
     );
     gh.lazySingleton<_i514.CounterRepository>(
       () => _i770.CounterRepositoryImpl(
         gh<_i1030.CounterRemoteDataSource>(),
         gh<_i976.CounterLocalDataSource>(),
       ),
-    );
-    gh.lazySingleton<_i745.AuthInterceptor>(
-      () => _i745.AuthInterceptor(gh<_i667.DioClient>(), gh<_i979.AppEnv>()),
     );
     gh.lazySingleton<_i245.GetCounter>(
       () => _i245.GetCounter(gh<_i514.CounterRepository>()),
