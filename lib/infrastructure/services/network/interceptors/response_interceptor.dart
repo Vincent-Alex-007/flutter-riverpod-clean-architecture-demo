@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../core/exceptions.dart';
-import '../../errors/error_handler.dart';
+import '../../../../core/exceptions.dart';
+import '../../../errors/error_handler.dart';
 import '../response_model.dart';
 
 @lazySingleton

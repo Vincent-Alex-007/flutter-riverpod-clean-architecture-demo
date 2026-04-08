@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../config/app_env.dart';
+import '../../../config/app_env.dart';
 import '../dio_client.dart';
 
 class _PendingRequest {

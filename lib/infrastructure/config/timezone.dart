@@ -1,5 +1,4 @@
 import 'package:injectable/injectable.dart';
-import 'package:timezone/data/latest_all.dart' show initializeTimeZones;
 import 'package:timezone/timezone.dart'
     show Location, UTC, getLocation, setLocalLocation;
 
@@ -8,11 +7,7 @@ import 'device_timezone.dart';
 @singleton
 final class Timezone {
   Timezone(this._deviceTimezone) {
-    initializeTimeZones();
-
-    final ianaName = _deviceTimezone.name?.trim();
-
-    final loc = _locationForIana(ianaName);
+    final loc = _locationForIana(_deviceTimezone.name);
     location = loc;
     name = loc.name;
     setLocalLocation(location);
@@ -34,8 +29,8 @@ final class Timezone {
     }
   }
 
-  void setTimeZone(String name) {
-    final loc = _locationForIana(name);
+  void setTimeZone(String ianaName) {
+    final loc = _locationForIana(ianaName);
     location = loc;
     name = loc.name;
     setLocalLocation(location);
