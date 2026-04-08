@@ -1,3 +1,4 @@
+// global exception
 final class AppException<E extends Object?> implements Exception {
   const AppException({
     required this.message,
@@ -33,6 +34,7 @@ final class AppException<E extends Object?> implements Exception {
   }
 }
 
+// business exception
 final class BusinessException<E extends Object?> extends AppException<E> {
   const BusinessException({
     required super.message,
@@ -42,6 +44,7 @@ final class BusinessException<E extends Object?> extends AppException<E> {
   });
 }
 
+// network exception
 final class NetworkException<E extends Object?> extends AppException<E> {
   const NetworkException({
     required super.message,
@@ -51,6 +54,7 @@ final class NetworkException<E extends Object?> extends AppException<E> {
   });
 }
 
+// json exception
 final class JsonException<E extends Object?> extends AppException<E> {
   const JsonException({
     required super.message,
