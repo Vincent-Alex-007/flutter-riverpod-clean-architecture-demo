@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../counter/counter.dart';
+import '../../../todo/todo.dart';
 
 class DemoModel {
   DemoModel({
@@ -60,6 +61,12 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () =>
                               const CounterDemoRoute().push(context),
                           child: const Text('打开分层架构 Counter Demo'),
+                        ),
+                        const SizedBox(height: 12),
+                        FilledButton(
+                          onPressed: () =>
+                              const TodoDemoRoute().push(context),
+                          child: const Text('打开 Drift 数据库 Todo Demo'),
                         ),
                       ],
                     ),

@@ -4,7 +4,7 @@ import '../../services/database/app_database.dart';
 
 @module
 abstract class DatabaseModule {
-  @singleton
+  @lazySingleton
   AppDatabase get database => AppDatabase();
 
   /// 销毁数据库连接，在 getIt.reset() 时自动调用

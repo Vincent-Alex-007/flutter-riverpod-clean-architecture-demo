@@ -30,10 +30,22 @@ import '../../features/counter/domain/repositories/counter_repository.dart'
     as _i514;
 import '../../features/counter/domain/usecases/get_counter.dart' as _i245;
 import '../../features/counter/domain/usecases/increment_counter.dart' as _i931;
+import '../../features/todo/data/datasources/todo_local_data_source.dart'
+    as _i471;
+import '../../features/todo/data/datasources/todo_local_data_source_impl.dart'
+    as _i622;
+import '../../features/todo/data/repositories/todo_repository_impl.dart'
+    as _i767;
+import '../../features/todo/domain/repositories/todo_repository.dart' as _i136;
+import '../../features/todo/domain/usecases/add_todo.dart' as _i100;
+import '../../features/todo/domain/usecases/delete_todo.dart' as _i48;
+import '../../features/todo/domain/usecases/get_todos.dart' as _i997;
+import '../../features/todo/domain/usecases/toggle_todo.dart' as _i346;
 import '../config/app_env.dart' as _i979;
 import '../config/device_timezone.dart' as _i267;
 import '../config/timezone.dart' as _i641;
 import '../errors/error_handler.dart' as _i433;
+import '../services/database/app_database.dart' as _i116;
 import '../services/network/dio_client.dart' as _i981;
 import '../services/network/interceptors/auth_interceptor.dart' as _i304;
 import '../services/network/interceptors/response_interceptor.dart' as _i92;
@@ -42,8 +54,8 @@ import 'modules/log_module.dart' as _i417;
 import 'modules/router_module.dart' as _i322;
 import 'modules/storage_module.dart' as _i148;
 
-const String _dev = 'dev';
 const String _uat = 'uat';
+const String _dev = 'dev';
 const String _prod = 'prod';
 
 extension GetItInjectableX on _i174.GetIt {
@@ -70,9 +82,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1030.CounterRemoteDataSource>(
       () => _i721.CounterRemoteDataSourceImpl(),
     );
-    gh.lazySingleton<_i979.AppEnvDev>(
-      () => _i979.AppEnvDev(),
-      registerFor: {_dev},
+    gh.lazySingleton<_i979.AppEnv>(
+      () => _i979.AppEnvUat(),
+      registerFor: {_uat},
     );
     gh.lazySingleton<_i583.GoRouter>(
       () => routerModule.appRouter(gh<_i207.Talker>()),
@@ -80,23 +92,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i92.ResponseInterceptor>(
       () => _i92.ResponseInterceptor(gh<_i433.ErrorHandler>()),
     );
+    gh.lazySingleton<_i979.AppEnv>(
+      () => _i979.AppEnvDev(),
+      registerFor: {_dev},
+    );
     gh.singleton<_i641.Timezone>(
       () => _i641.Timezone(gh<_i267.DeviceTimezone>()),
     );
-    gh.lazySingleton<_i979.AppEnvUat>(
-      () => _i979.AppEnvUat(),
-      registerFor: {_uat},
+    gh.lazySingleton<_i471.TodoLocalDataSource>(
+      () => _i622.TodoLocalDataSourceImpl(gh<_i116.AppDatabase>()),
     );
-    gh.lazySingleton<_i979.AppEnvProd>(
+    gh.lazySingleton<_i979.AppEnv>(
       () => _i979.AppEnvProd(),
       registerFor: {_prod},
     );
-    gh.lazySingleton<_i981.DioClient>(
-      () => _i981.DioClient(
-        gh<_i207.Talker>(),
-        gh<_i92.ResponseInterceptor>(),
-        gh<_i979.AppEnv>(),
-      ),
+    gh.lazySingleton<_i136.TodoRepository>(
+      () => _i767.TodoRepositoryImpl(gh<_i471.TodoLocalDataSource>()),
     );
     gh.lazySingleton<_i1005.WebSocketClient>(
       () => _i1005.WebSocketClient(gh<_i207.Talker>(), gh<_i979.AppEnv>()),
@@ -105,13 +116,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i976.CounterLocalDataSource>(
       () => _i155.CounterLocalDataSourceImpl(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i304.AuthInterceptor>(
-      () => _i304.AuthInterceptor(gh<_i981.DioClient>(), gh<_i979.AppEnv>()),
-    );
     gh.lazySingleton<_i514.CounterRepository>(
       () => _i770.CounterRepositoryImpl(
         gh<_i1030.CounterRemoteDataSource>(),
         gh<_i976.CounterLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i100.AddTodo>(
+      () => _i100.AddTodo(gh<_i136.TodoRepository>()),
+    );
+    gh.lazySingleton<_i48.DeleteTodo>(
+      () => _i48.DeleteTodo(gh<_i136.TodoRepository>()),
+    );
+    gh.lazySingleton<_i997.GetTodos>(
+      () => _i997.GetTodos(gh<_i136.TodoRepository>()),
+    );
+    gh.lazySingleton<_i346.ToggleTodo>(
+      () => _i346.ToggleTodo(gh<_i136.TodoRepository>()),
+    );
+    gh.lazySingleton<_i981.DioClient>(
+      () => _i981.DioClient(
+        gh<_i207.Talker>(),
+        gh<_i92.ResponseInterceptor>(),
+        gh<_i979.AppEnv>(),
       ),
     );
     gh.lazySingleton<_i245.GetCounter>(
@@ -119,6 +146,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i931.IncrementCounter>(
       () => _i931.IncrementCounter(gh<_i514.CounterRepository>()),
+    );
+    gh.lazySingleton<_i304.AuthInterceptor>(
+      () => _i304.AuthInterceptor(gh<_i981.DioClient>(), gh<_i979.AppEnv>()),
     );
     return this;
   }

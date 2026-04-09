@@ -13,7 +13,7 @@ abstract interface class AppEnv {
   AppEnvEnum get env;
 }
 
-@lazySingleton
+@LazySingleton(as: AppEnv)
 @Environment('dev')
 @Envied(path: '.env.dev', allowOptionalFields: true)
 final class AppEnvDev implements AppEnv {
@@ -33,7 +33,7 @@ final class AppEnvDev implements AppEnv {
   AppEnvEnum get env => AppEnvEnum.dev;
 }
 
-@lazySingleton
+@LazySingleton(as: AppEnv)
 @Environment('prod')
 @Envied(path: '.env.prod', obfuscate: true, allowOptionalFields: true)
 final class AppEnvProd implements AppEnv {
@@ -53,7 +53,7 @@ final class AppEnvProd implements AppEnv {
   AppEnvEnum get env => AppEnvEnum.prod;
 }
 
-@lazySingleton
+@LazySingleton(as: AppEnv)
 @Environment('uat')
 @Envied(path: '.env.uat', allowOptionalFields: true)
 final class AppEnvUat implements AppEnv {
