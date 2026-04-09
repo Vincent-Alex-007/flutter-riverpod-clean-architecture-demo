@@ -43,6 +43,22 @@ fvm flutter test test/widget_test.dart   # 单个测试
 
 每个 feature 有一个桶文件（`lib/features/<name>/<name>.dart`），是该 feature 的**唯一对外入口**。外部代码必须通过此桶文件导入，未 export 的类型视为模块私有。feature 内部子目录之间按分层引用。
 
+桶文件注释格式：`/// ###` 标题 + 简要描述，约定规则由本文档统一说明，不在每个桶文件中重复。
+
+```dart
+/// ### <Name> 功能模块的**唯一对外入口**。
+///
+/// <一句话描述该模块的功能>
+library;
+
+export '...' show ...;
+```
+
+**规则：**
+- 对外暴露的成员一律通过 `export ... show ...` 列出；未 export 的类型视为模块私有
+- 子目录之间按分层引用：`presentation` → `domain`；`data` 实现 `domain` 端口
+- `injection.config.dart` 生成的 import 不算「业务侧」引用，手写代码不得绕过桶文件直接引用 feature 内部路径
+
 ### 依赖注入：双系统（get_it + injectable ｜ Riverpod）
 
 #### 职责划分
