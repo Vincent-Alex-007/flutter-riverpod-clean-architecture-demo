@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../infrastructure/services/network/response_model.dart';
+import '../../../../infrastructure/network/response_model.dart';
 import '../dto/counter_remote_dto.dart';
 import 'counter_remote_data_source.dart';
 

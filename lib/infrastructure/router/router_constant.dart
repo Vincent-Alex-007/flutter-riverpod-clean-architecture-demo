@@ -5,6 +5,8 @@ abstract final class RouterNames {
   static const String home = 'home';
   static const String counterDemo = 'counterDemo';
   static const String todoDemo = 'todoDemo';
+  static const String productList = 'productList';
+  static const String cart = 'cart';
 }
 
 abstract final class RouterPaths {
@@ -14,4 +16,6 @@ abstract final class RouterPaths {
   static const String home = '/home';
   static const String counterDemo = '/demo/counter';
   static const String todoDemo = '/demo/todo';
+  static const String productList = '/demo/products';
+  static const String cart = '/demo/cart';
 }

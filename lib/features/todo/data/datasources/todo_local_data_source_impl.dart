@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../infrastructure/services/database/app_database.dart';
+import '../../../../infrastructure/database/app_database.dart';
 import '../../domain/entities/todo_entity.dart';
 import 'todo_local_data_source.dart';
 

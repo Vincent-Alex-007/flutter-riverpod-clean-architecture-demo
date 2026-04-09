@@ -5,8 +5,8 @@ import 'package:injectable/injectable.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../../core/exceptions.dart';
-import '../../config/app_env.dart';
+import '../../core/exceptions.dart';
+import '../config/app_env.dart';
 
 /// WebSocket 连接状态
 enum WebSocketConnectionState {
@@ -33,7 +33,8 @@ final class WebSocketClient {
   static const int _maxReconnectAttempt = 5;
   static const Duration _heartbeatInterval = Duration(seconds: 30);
 
-  final _stateController = StreamController<WebSocketConnectionState>.broadcast();
+  final _stateController =
+      StreamController<WebSocketConnectionState>.broadcast();
   final _messageController = StreamController<dynamic>.broadcast();
 
   WebSocketConnectionState _state = WebSocketConnectionState.disconnected;
@@ -153,7 +154,9 @@ final class WebSocketClient {
     final delay = Duration(seconds: 1 << _reconnectAttempt); // 1, 2, 4, 8, 16s
     _reconnectAttempt++;
 
-    _talker.info('WebSocket 将在 ${delay.inSeconds}s 后重连 (第 $_reconnectAttempt 次)');
+    _talker.info(
+      'WebSocket 将在 ${delay.inSeconds}s 后重连 (第 $_reconnectAttempt 次)',
+    );
     _updateState(WebSocketConnectionState.reconnecting);
 
     _reconnectTimer = Timer(delay, () {

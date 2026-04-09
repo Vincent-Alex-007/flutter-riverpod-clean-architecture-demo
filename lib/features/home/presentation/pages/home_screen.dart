@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../counter/counter.dart';
+import '../../../product/product.dart';
 import '../../../todo/todo.dart';
 
 class DemoModel {
@@ -67,6 +68,12 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () =>
                               const TodoDemoRoute().push(context),
                           child: const Text('打开 Drift 数据库 Todo Demo'),
+                        ),
+                        const SizedBox(height: 12),
+                        FilledButton(
+                          onPressed: () =>
+                              const ProductListRoute().push(context),
+                          child: const Text('打开商城 Demo（Domain Service）'),
                         ),
                       ],
                     ),

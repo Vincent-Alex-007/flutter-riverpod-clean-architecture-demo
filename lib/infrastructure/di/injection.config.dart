@@ -30,6 +30,36 @@ import '../../features/counter/domain/repositories/counter_repository.dart'
     as _i514;
 import '../../features/counter/domain/usecases/get_counter.dart' as _i245;
 import '../../features/counter/domain/usecases/increment_counter.dart' as _i931;
+import '../../features/order/data/datasources/cart_local_data_source.dart'
+    as _i7;
+import '../../features/order/data/datasources/cart_local_data_source_impl.dart'
+    as _i180;
+import '../../features/order/data/datasources/order_local_data_source.dart'
+    as _i1064;
+import '../../features/order/data/datasources/order_local_data_source_impl.dart'
+    as _i992;
+import '../../features/order/data/repositories/cart_repository_impl.dart'
+    as _i188;
+import '../../features/order/data/repositories/order_repository_impl.dart'
+    as _i103;
+import '../../features/order/domain/repositories/cart_repository.dart' as _i37;
+import '../../features/order/domain/repositories/order_repository.dart'
+    as _i765;
+import '../../features/order/domain/services/pricing_service.dart' as _i157;
+import '../../features/order/domain/usecases/add_to_cart.dart' as _i633;
+import '../../features/order/domain/usecases/get_cart.dart' as _i251;
+import '../../features/order/domain/usecases/preview_order.dart' as _i574;
+import '../../features/order/domain/usecases/remove_from_cart.dart' as _i1008;
+import '../../features/order/domain/usecases/submit_order.dart' as _i182;
+import '../../features/product/data/datasources/product_local_data_source.dart'
+    as _i814;
+import '../../features/product/data/datasources/product_local_data_source_impl.dart'
+    as _i358;
+import '../../features/product/data/repositories/product_repository_impl.dart'
+    as _i1040;
+import '../../features/product/domain/repositories/product_repository.dart'
+    as _i39;
+import '../../features/product/domain/usecases/get_products.dart' as _i279;
 import '../../features/todo/data/datasources/todo_local_data_source.dart'
     as _i471;
 import '../../features/todo/data/datasources/todo_local_data_source_impl.dart'
@@ -44,12 +74,12 @@ import '../../features/todo/domain/usecases/toggle_todo.dart' as _i346;
 import '../config/app_env.dart' as _i979;
 import '../config/device_timezone.dart' as _i267;
 import '../config/timezone.dart' as _i641;
+import '../database/app_database.dart' as _i982;
 import '../errors/error_handler.dart' as _i433;
-import '../services/database/app_database.dart' as _i116;
-import '../services/network/dio_client.dart' as _i981;
-import '../services/network/interceptors/auth_interceptor.dart' as _i304;
-import '../services/network/interceptors/response_interceptor.dart' as _i92;
-import '../services/websocket/websocket_client.dart' as _i1005;
+import '../network/dio_client.dart' as _i667;
+import '../network/interceptors/auth_interceptor.dart' as _i745;
+import '../network/interceptors/response_interceptor.dart' as _i292;
+import '../websocket/websocket_client.dart' as _i275;
 import 'modules/log_module.dart' as _i417;
 import 'modules/router_module.dart' as _i322;
 import 'modules/storage_module.dart' as _i148;
@@ -78,7 +108,18 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i558.FlutterSecureStorage>(() => storageModule.secureStorage);
+    gh.lazySingleton<_i157.PricingService>(() => _i157.PricingService());
+    gh.lazySingleton<_i982.AppDatabase>(
+      () => _i982.AppDatabase(),
+      dispose: (i) => i.closeDatabase(),
+    );
     gh.lazySingleton<_i433.ErrorHandler>(() => _i433.ErrorHandler());
+    gh.lazySingleton<_i7.CartLocalDataSource>(
+      () => _i180.CartLocalDataSourceImpl(gh<_i982.AppDatabase>()),
+    );
+    gh.lazySingleton<_i814.ProductLocalDataSource>(
+      () => _i358.ProductLocalDataSourceImpl(gh<_i982.AppDatabase>()),
+    );
     gh.lazySingleton<_i1030.CounterRemoteDataSource>(
       () => _i721.CounterRemoteDataSourceImpl(),
     );
@@ -86,11 +127,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i979.AppEnvUat(),
       registerFor: {_uat},
     );
+    gh.lazySingleton<_i471.TodoLocalDataSource>(
+      () => _i622.TodoLocalDataSourceImpl(gh<_i982.AppDatabase>()),
+    );
     gh.lazySingleton<_i583.GoRouter>(
       () => routerModule.appRouter(gh<_i207.Talker>()),
     );
-    gh.lazySingleton<_i92.ResponseInterceptor>(
-      () => _i92.ResponseInterceptor(gh<_i433.ErrorHandler>()),
+    gh.lazySingleton<_i292.ResponseInterceptor>(
+      () => _i292.ResponseInterceptor(gh<_i433.ErrorHandler>()),
     );
     gh.lazySingleton<_i979.AppEnv>(
       () => _i979.AppEnvDev(),
@@ -99,8 +143,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i641.Timezone>(
       () => _i641.Timezone(gh<_i267.DeviceTimezone>()),
     );
-    gh.lazySingleton<_i471.TodoLocalDataSource>(
-      () => _i622.TodoLocalDataSourceImpl(gh<_i116.AppDatabase>()),
+    gh.lazySingleton<_i1064.OrderLocalDataSource>(
+      () => _i992.OrderLocalDataSourceImpl(gh<_i982.AppDatabase>()),
+    );
+    gh.lazySingleton<_i765.OrderRepository>(
+      () => _i103.OrderRepositoryImpl(gh<_i1064.OrderLocalDataSource>()),
+    );
+    gh.lazySingleton<_i37.CartRepository>(
+      () => _i188.CartRepositoryImpl(gh<_i7.CartLocalDataSource>()),
+    );
+    gh.lazySingleton<_i574.PreviewOrder>(
+      () => _i574.PreviewOrder(
+        gh<_i37.CartRepository>(),
+        gh<_i157.PricingService>(),
+      ),
+    );
+    gh.lazySingleton<_i39.ProductRepository>(
+      () => _i1040.ProductRepositoryImpl(gh<_i814.ProductLocalDataSource>()),
     );
     gh.lazySingleton<_i979.AppEnv>(
       () => _i979.AppEnvProd(),
@@ -109,8 +168,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i136.TodoRepository>(
       () => _i767.TodoRepositoryImpl(gh<_i471.TodoLocalDataSource>()),
     );
-    gh.lazySingleton<_i1005.WebSocketClient>(
-      () => _i1005.WebSocketClient(gh<_i207.Talker>(), gh<_i979.AppEnv>()),
+    gh.lazySingleton<_i275.WebSocketClient>(
+      () => _i275.WebSocketClient(gh<_i207.Talker>(), gh<_i979.AppEnv>()),
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i976.CounterLocalDataSource>(
@@ -121,6 +180,33 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1030.CounterRemoteDataSource>(),
         gh<_i976.CounterLocalDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i182.SubmitOrder>(
+      () => _i182.SubmitOrder(
+        gh<_i37.CartRepository>(),
+        gh<_i765.OrderRepository>(),
+        gh<_i39.ProductRepository>(),
+        gh<_i157.PricingService>(),
+      ),
+    );
+    gh.lazySingleton<_i633.AddToCart>(
+      () => _i633.AddToCart(gh<_i37.CartRepository>()),
+    );
+    gh.lazySingleton<_i251.GetCart>(
+      () => _i251.GetCart(gh<_i37.CartRepository>()),
+    );
+    gh.lazySingleton<_i1008.RemoveFromCart>(
+      () => _i1008.RemoveFromCart(gh<_i37.CartRepository>()),
+    );
+    gh.lazySingleton<_i667.DioClient>(
+      () => _i667.DioClient(
+        gh<_i207.Talker>(),
+        gh<_i292.ResponseInterceptor>(),
+        gh<_i979.AppEnv>(),
+      ),
+    );
+    gh.lazySingleton<_i279.GetProducts>(
+      () => _i279.GetProducts(gh<_i39.ProductRepository>()),
     );
     gh.lazySingleton<_i100.AddTodo>(
       () => _i100.AddTodo(gh<_i136.TodoRepository>()),
@@ -134,21 +220,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i346.ToggleTodo>(
       () => _i346.ToggleTodo(gh<_i136.TodoRepository>()),
     );
-    gh.lazySingleton<_i981.DioClient>(
-      () => _i981.DioClient(
-        gh<_i207.Talker>(),
-        gh<_i92.ResponseInterceptor>(),
-        gh<_i979.AppEnv>(),
-      ),
-    );
     gh.lazySingleton<_i245.GetCounter>(
       () => _i245.GetCounter(gh<_i514.CounterRepository>()),
     );
     gh.lazySingleton<_i931.IncrementCounter>(
       () => _i931.IncrementCounter(gh<_i514.CounterRepository>()),
     );
-    gh.lazySingleton<_i304.AuthInterceptor>(
-      () => _i304.AuthInterceptor(gh<_i981.DioClient>(), gh<_i979.AppEnv>()),
+    gh.lazySingleton<_i745.AuthInterceptor>(
+      () => _i745.AuthInterceptor(gh<_i667.DioClient>(), gh<_i979.AppEnv>()),
     );
     return this;
   }

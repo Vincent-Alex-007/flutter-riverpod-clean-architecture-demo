@@ -1,13 +1,2 @@
-import 'package:injectable/injectable.dart';
-
-import '../../services/database/app_database.dart';
-
-@module
-abstract class DatabaseModule {
-  @lazySingleton
-  AppDatabase get database => AppDatabase();
-
-  /// 销毁数据库连接，在 getIt.reset() 时自动调用
-  @disposeMethod
-  Future<void> closeDatabase(AppDatabase db) => db.close();
-}
+// 数据库通过 AppDatabase 类上的 @LazySingleton 注解直接注册到 get_it。
+// 如需在此模块中管理，请取消注释并移除 AppDatabase 上的注解。
