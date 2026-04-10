@@ -13,7 +13,7 @@ part 'app_env.g.dart';
   obfuscate: true,
   allowOptionalFields: true,
 )
-final class AppEnvBase {
+abstract interface class AppEnvBase {
   @EnviedField(varName: 'BASE_URL')
   final String baseUrl = '';
 
@@ -21,11 +21,7 @@ final class AppEnvBase {
   final String wsUrl = '';
 }
 
-abstract interface class AppEnv {
-  String get baseUrl;
-
-  String get wsUrl;
-
+abstract interface class AppEnv implements AppEnvBase {
   AppEnvEnum get env;
 }
 
