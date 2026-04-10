@@ -24,7 +24,7 @@ class CounterLoadResult with _$CounterLoadResult {
 enum InviteFailureType { format, invalid, empty }
 
 @freezed
-final class InviteCodeStatus with _$InviteCodeStatus {
+sealed class InviteCodeStatus with _$InviteCodeStatus {
   const factory InviteCodeStatus.success(String data) = _Success;
   const factory InviteCodeStatus.error(InviteFailureType type) = _Error;
 }
