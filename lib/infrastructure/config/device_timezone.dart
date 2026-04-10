@@ -12,19 +12,15 @@ final class DeviceTimezone {
   Future<void> init() async {
     initializeTimeZones();
 
-    try {
-      final info = await FlutterTimezone.getLocalTimezone();
-      if (timeZoneDatabase.locations.containsKey(info.identifier)) {
-        name = info.identifier;
-        return;
-      }
-    } catch (_) {}
+    final info = await FlutterTimezone.getLocalTimezone();
+    if (timeZoneDatabase.locations.containsKey(info.identifier)) {
+      name = info.identifier;
+      return;
+    }
 
-    try {
-      final localName = local.name;
-      if (timeZoneDatabase.locations.containsKey(localName)) {
-        name = localName;
-      }
-    } catch (_) {}
+    final localName = local.name;
+    if (timeZoneDatabase.locations.containsKey(localName)) {
+      name = localName;
+    }
   }
 }

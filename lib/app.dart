@@ -16,8 +16,9 @@ final class App extends HookWidget {
     return MaterialApp.router(
       routerConfig: _router,
       title: 'Flutter Demo',
-      theme: AppTheme.blueLight,
-      darkTheme: AppTheme.blueDark,
+      theme: BlueTheme.light,
+      darkTheme: BlueTheme.dark,
+
       supportedLocales: L10n.supportedLocales,
       localizationsDelegates: L10n.localizationsDelegates,
     );

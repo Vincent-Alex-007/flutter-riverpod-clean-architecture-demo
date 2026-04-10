@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
-import '../../domain/entities/price_breakdown.dart';
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/price_breakdown.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../datasources/order_local_data_source.dart';
 
